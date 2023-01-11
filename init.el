@@ -61,7 +61,7 @@
  ("u" undo)
  ("a" forward-char :exit t)
  ("A" move-end-of-line :exit t)
- ("Z" move-beginning-of-line :exit t)
+ ("Z" back-to-indentation :exit t)
  ("C-m" windmove-left)
  ("C-n" windmove-down)
  ("C-e" windmove-up)
