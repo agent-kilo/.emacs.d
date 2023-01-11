@@ -44,7 +44,8 @@
  ("w" forward-word)
  ("b" backward-word)
  ("g"
-  (("m" move-beginning-of-line)
+  (("m" back-to-indentation)
+   ("M" move-beginning-of-line)
    ("i" move-end-of-line)
    ("e" beginning-of-buffer)
    ("n" end-of-buffer)
