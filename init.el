@@ -70,15 +70,15 @@
   (unless (use-region-p) (set-mark (point)))
   (previous-line))
 
-(defun init/select-to-next-word ()
-  (interactive)
+(defun init/select-to-next-word (count)
+  (interactive "p")
   (unless (use-region-p) (set-mark (point)))
-  (forward-word))
+  (forward-word count))
 
-(defun init/select-to-prev-word ()
-  (interactive)
+(defun init/select-to-prev-word (count)
+  (interactive "p")
   (unless (use-region-p) (set-mark (point)))
-  (backward-word))
+  (backward-word count))
 
 (defun init/kill-selection (count)
   (interactive "p")
