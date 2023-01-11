@@ -122,7 +122,7 @@
     (("s" split-window-vertically)
      ("v" split-window-horizontally)
      ("q" delete-window)
-     ("O" delete-other-windows)
+     ("d" delete-other-windows)
      ("o" previous-window-any-frame)
      ("t" next-window-any-frame)
      ("m" windmove-left)
