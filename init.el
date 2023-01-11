@@ -101,6 +101,12 @@
       (exchange-point-and-mark)
       (deactivate-mark))))
 
+(defun init/goto-line (&optional line)
+  (interactive "p")
+  (if line
+    (goto-line line)
+    (beginning-of-buffer)))
+
 
 (add-hook 'prog-mode-hook #'(lambda () (ryo-modal-mode 1)))
 
@@ -110,8 +116,19 @@
 
  ("z" ryo-modal-mode)
 
- ("SPC"
-  (("h" help-command :name "Help")))
+ (","
+  (("h" help-command :name "Help")
+   ("t"
+    (("s" split-window-vertically)
+     ("v" split-window-horizontally)
+     ("q" delete-window)
+     ("O" delete-other-windows)
+     ("o" previous-window-any-frame)
+     ("t" next-window-any-frame)
+     ("m" windmove-left)
+     ("i" windmove-right)
+     ("n" windmove-down)
+     ("e" windmove-up)))))
 
  (":" execute-extended-command)
 
@@ -143,7 +160,7 @@
    ("w" forward-sentence)
    ("b" backward-sentence)
 
-   ("g" beginning-of-buffer)
+   ("g" init/goto-line)
    ("G" end-of-buffer)))
 
  ("f" isearch-forward)
@@ -164,13 +181,9 @@
  ("Z" back-to-indentation :exit t)
  ("o" init/open-lines-below :exit t)
  ("O" init/open-lines-above :exit t)
+ ("c" init/kill-selection :exit t))
 
- ("C-m" windmove-left)
- ("C-n" windmove-down)
- ("C-e" windmove-up)
- ("C-i" windmove-right))
-
-(define-key ryo-modal-mode-map (kbd "SPC x") ctl-x-map)
+(define-key ryo-modal-mode-map (kbd ", x") ctl-x-map)
 
 
 (ryo-modal-keys
