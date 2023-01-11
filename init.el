@@ -60,15 +60,15 @@
   (set-mark (point))
   (end-of-line))
 
-(defun init/select-to-next-line ()
-  (interactive)
+(defun init/select-to-next-line (count)
+  (interactive "p")
   (unless (use-region-p) (set-mark (point)))
-  (next-line))
+  (next-line count))
 
-(defun init/select-to-prev-line ()
-  (interactive)
+(defun init/select-to-prev-line (count)
+  (interactive "p")
   (unless (use-region-p) (set-mark (point)))
-  (previous-line))
+  (previous-line count))
 
 (defun init/select-to-next-word (count)
   (interactive "p")
@@ -144,9 +144,7 @@
    ("b" backward-sentence)
 
    ("g" beginning-of-buffer)
-   ("G" end-of-buffer)
-   ("t" beginning-of-buffer)
-   ("b" end-of-buffer)))
+   ("G" end-of-buffer)))
 
  ("f" isearch-forward)
  ("M-f" isearch-backward)
