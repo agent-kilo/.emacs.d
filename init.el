@@ -70,6 +70,7 @@
 
 (ryo-modal-keys
  (:norepeat t)
+ ("-" "M--")
  ("0" "M-0")
  ("1" "M-1")
  ("2" "M-2")
