@@ -1,222 +1,219 @@
 (setq make-backup-files nil)
 
+(setq display-line-numbers-type 'visual)
+(global-display-line-numbers-mode)
+
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(if (file-exists-p custom-file) (load custom-file))
+
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(require 'use-package)
+(setq use-package-always-ensure t)
 
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(sanityinc-tomorrow-night))
- '(custom-safe-themes
-   '("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default))
- '(package-selected-packages
-   '(kotlin-mode which-key ryo-modal use-package color-theme-sanityinc-tomorrow)))
+(use-package ryo-modal
+  :bind ("C-z" . ryo-modal-mode)
+  :hook (after-init . init/ryo-modal-setup)
+  :config
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+  (add-hook 'prog-mode-hook #'(lambda () (ryo-modal-mode 1)))
 
+  (defun init/deactivate-mark ()
+    (interactive)
+    (deactivate-mark))
 
-(defun init/deactivate-mark ()
-  (interactive)
-  (deactivate-mark))
+  (defun init/open-lines-below (count)
+    (interactive "p")
+    (end-of-line)
+    (dotimes (_ count)
+      (electric-newline-and-maybe-indent)))
 
-(defun init/open-lines-below (count)
-  "Open COUNT lines below."
-  (interactive "p")
-  (end-of-line)
-  (dotimes (_ count)
-    (electric-newline-and-maybe-indent)))
+  (defun init/open-lines-above (count)
+    (interactive "p")
+    (beginning-of-line)
+    (dotimes (_ count)
+      (newline)
+      (forward-line -1)))
 
-(defun init/open-lines-above (count)
-  "Open COUNT lines above."
-  (interactive "p")
-  (beginning-of-line)
-  (dotimes (_ count)
-    (newline)
-    (forward-line -1)))
+  (defun init/select-lines (count)
+    (interactive "p")
+    (beginning-of-line)
+    (unless (use-region-p) (set-mark (point)))
+    (forward-line count))
 
-(defun init/select-lines (count)
-  "Select COUNT lines from the current line."
-  (interactive "p")
-  (beginning-of-line)
-  (unless (use-region-p) (set-mark (point)))
-  (forward-line count))
+  (defun init/select-line-before-point ()
+    (interactive)
+    (set-mark (point))
+    (beginning-of-line))
 
-(defun init/select-line-before-point ()
-  (interactive)
-  (set-mark (point))
-  (beginning-of-line))
+  (defun init/select-line-after-point ()
+    (interactive)
+    (set-mark (point))
+    (end-of-line))
 
-(defun init/select-line-after-point ()
-  (interactive)
-  (set-mark (point))
-  (end-of-line))
+  (defun init/select-to-next-line (count)
+    (interactive "p")
+    (unless (use-region-p) (set-mark (point)))
+    (next-line count))
 
-(defun init/select-to-next-line (count)
-  (interactive "p")
-  (unless (use-region-p) (set-mark (point)))
-  (next-line count))
+  (defun init/select-to-previous-line (count)
+    (interactive "p")
+    (unless (use-region-p) (set-mark (point)))
+    (previous-line count))
 
-(defun init/select-to-previous-line (count)
-  (interactive "p")
-  (unless (use-region-p) (set-mark (point)))
-  (previous-line count))
+  (defun init/select-to-forward-word (count)
+    (interactive "p")
+    (unless (use-region-p) (set-mark (point)))
+    (forward-word count))
 
-(defun init/select-to-forward-word (count)
-  (interactive "p")
-  (unless (use-region-p) (set-mark (point)))
-  (forward-word count))
+  (defun init/select-to-backward-word (count)
+    (interactive "p")
+    (unless (use-region-p) (set-mark (point)))
+    (backward-word count))
 
-(defun init/select-to-backward-word (count)
-  (interactive "p")
-  (unless (use-region-p) (set-mark (point)))
-  (backward-word count))
+  (defun init/select-to-forward-sexp (count)
+    (interactive "p")
+    (unless (use-region-p) (set-mark (point)))
+    (forward-sexp count))
 
-(defun init/select-to-forward-sexp (count)
-  (interactive "p")
-  (unless (use-region-p) (set-mark (point)))
-  (forward-sexp count))
+  (defun init/select-to-backward-sexp (count)
+    (interactive "p")
+    (unless (use-region-p) (set-mark (point)))
+    (backward-sexp count))
 
-(defun init/select-to-backward-sexp (count)
-  (interactive "p")
-  (unless (use-region-p) (set-mark (point)))
-  (backward-sexp count))
+  (defun init/kill-selection (count)
+    (interactive "p")
+    (if (use-region-p)
+	(kill-region (region-beginning) (region-end))
+      (progn
+	(set-mark (point))
+	(forward-char count)
+	(kill-region (region-beginning) (region-end))
+	(deactivate-mark))))
 
-(defun init/kill-selection (count)
-  (interactive "p")
-  (if (use-region-p)
-    (kill-region (region-beginning) (region-end))
-    (progn
-      (set-mark (point))
-      (forward-char count)
-      (kill-region (region-beginning) (region-end))
-      (deactivate-mark))))
+  (defun init/kill-ring-save-selection (count)
+    (interactive "p")
+    (if (use-region-p)
+	(kill-ring-save (region-beginning) (region-end))
+      (progn
+	(set-mark (point))
+	(forward-char count)
+	(kill-ring-save (region-beginning) (region-end))
+	(exchange-point-and-mark)
+	(deactivate-mark))))
 
-(defun init/kill-ring-save-selection (count)
-  (interactive "p")
-  (if (use-region-p)
-    (kill-ring-save (region-beginning) (region-end))
-    (progn
-      (set-mark (point))
-      (forward-char count)
-      (kill-ring-save (region-beginning) (region-end))
-      (exchange-point-and-mark)
-      (deactivate-mark))))
+  (defun init/goto-line (&optional line)
+    (interactive "p")
+    (if line
+	(goto-line line)
+      (beginning-of-buffer)))
 
-(defun init/goto-line (&optional line)
-  (interactive "p")
-  (if line
-    (goto-line line)
-    (beginning-of-buffer)))
+  (defun init/ryo-modal-setup ()
+    (ryo-modal-keys
+     ("z" ryo-modal-mode)
 
+     (","
+      (("h" help-command :name "Help")
+       ("t"
+	(("s" split-window-vertically)
+	 ("v" split-window-horizontally)
+	 ("q" delete-window)
+	 ("d" delete-other-windows)
+	 ("o" previous-window-any-frame)
+	 ("t" next-window-any-frame)
+	 ("m" windmove-left)
+	 ("i" windmove-right)
+	 ("n" windmove-down)
+	 ("e" windmove-up)))))
 
-(add-hook 'prog-mode-hook #'(lambda () (ryo-modal-mode 1)))
+     (":" execute-extended-command)
 
-(global-set-key (kbd "C-z") 'ryo-modal-mode)
+     ("." ryo-modal-repeat)
 
-(ryo-modal-keys
+     ("m" backward-char)
+     ("i" forward-char)
+     ("n" next-line)
+     ("e" previous-line)
 
- ("z" ryo-modal-mode)
+     ("M" init/select-line-before-point)
+     ("I" init/select-line-after-point)
+     ("N" init/select-to-next-line)
+     ("E" init/select-to-previous-line)
 
- (","
-  (("h" help-command :name "Help")
-   ("t"
-    (("s" split-window-vertically)
-     ("v" split-window-horizontally)
-     ("q" delete-window)
-     ("d" delete-other-windows)
-     ("o" previous-window-any-frame)
-     ("t" next-window-any-frame)
-     ("m" windmove-left)
-     ("i" windmove-right)
-     ("n" windmove-down)
-     ("e" windmove-up)))))
+     ("w" forward-word)
+     ("b" backward-word)
 
- (":" execute-extended-command)
+     ("W" init/select-to-forward-word)
+     ("B" init/select-to-backward-word)
 
- ("." ryo-modal-repeat)
+     ("s" forward-sexp)
+     ("r" backward-sexp)
 
- ("m" backward-char)
- ("i" forward-char)
- ("n" next-line)
- ("e" previous-line)
+     ("S" init/select-to-forward-sexp)
+     ("R" init/select-to-backward-sexp)
 
- ("M" init/select-line-before-point)
- ("I" init/select-line-after-point)
- ("N" init/select-to-next-line)
- ("E" init/select-to-previous-line)
+     ("g"
+      (("m" back-to-indentation)
+       ("M" move-beginning-of-line)
+       ("i" move-end-of-line)
+       ("n" forward-paragraph)
+       ("e" backward-paragraph)
 
- ("w" forward-word)
- ("b" backward-word)
+       ("w" forward-sentence)
+       ("b" backward-sentence)
 
- ("W" init/select-to-forward-word)
- ("B" init/select-to-backward-word)
+       ("g" init/goto-line)
+       ("G" end-of-buffer)))
 
- ("s" forward-sexp)
- ("r" backward-sexp)
+     ("f" isearch-forward)
+     ("M-f" isearch-backward)
 
- ("S" init/select-to-forward-sexp)
- ("R" init/select-to-backward-sexp)
+     ("v" set-mark-command)
+     (";" init/deactivate-mark)
+     ("M-;" exchange-point-and-mark)
+     ("x" init/select-lines)
 
- ("g"
-  (("m" back-to-indentation)
-   ("M" move-beginning-of-line)
-   ("i" move-end-of-line)
-   ("n" forward-paragraph)
-   ("e" backward-paragraph)
+     ("y" init/kill-ring-save-selection)
+     ("d" init/kill-selection)
+     ("p" yank)
+     ("u" undo)
 
-   ("w" forward-sentence)
-   ("b" backward-sentence)
+     ("a" forward-char :exit t)
+     ("A" move-end-of-line :exit t)
+     ("Z" back-to-indentation :exit t)
+     ("o" init/open-lines-below :exit t)
+     ("O" init/open-lines-above :exit t)
+     ("c" init/kill-selection :exit t))
 
-   ("g" init/goto-line)
-   ("G" end-of-buffer)))
+    (define-key ryo-modal-mode-map (kbd ", x") ctl-x-map)
 
- ("f" isearch-forward)
- ("M-f" isearch-backward)
-
- ("v" set-mark-command)
- (";" init/deactivate-mark)
- ("M-;" exchange-point-and-mark)
- ("x" init/select-lines)
-
- ("y" init/kill-ring-save-selection)
- ("d" init/kill-selection)
- ("p" yank)
- ("u" undo)
-
- ("a" forward-char :exit t)
- ("A" move-end-of-line :exit t)
- ("Z" back-to-indentation :exit t)
- ("o" init/open-lines-below :exit t)
- ("O" init/open-lines-above :exit t)
- ("c" init/kill-selection :exit t))
-
-(define-key ryo-modal-mode-map (kbd ", x") ctl-x-map)
+    (ryo-modal-keys
+     (:norepeat t)
+     ("-" "M--")
+     ("0" "M-0")
+     ("1" "M-1")
+     ("2" "M-2")
+     ("3" "M-3")
+     ("4" "M-4")
+     ("5" "M-5")
+     ("6" "M-6")
+     ("7" "M-7")
+     ("8" "M-8")
+     ("9" "M-9"))))
 
 
-(ryo-modal-keys
- (:norepeat t)
- ("-" "M--")
- ("0" "M-0")
- ("1" "M-1")
- ("2" "M-2")
- ("3" "M-3")
- ("4" "M-4")
- ("5" "M-5")
- ("6" "M-6")
- ("7" "M-7")
- ("8" "M-8")
- ("9" "M-9"))
+(use-package color-theme-sanityinc-tomorrow
+  :config (load-theme 'sanityinc-tomorrow-night))
 
 
-(setq display-line-numbers-type 'visual)
-(global-display-line-numbers-mode)
-(which-key-mode)
+(use-package which-key
+  :config (which-key-mode))
+
+
+(use-package kotlin-mode)
