@@ -65,20 +65,30 @@
   (unless (use-region-p) (set-mark (point)))
   (next-line count))
 
-(defun init/select-to-prev-line (count)
+(defun init/select-to-previous-line (count)
   (interactive "p")
   (unless (use-region-p) (set-mark (point)))
   (previous-line count))
 
-(defun init/select-to-next-word (count)
+(defun init/select-to-forward-word (count)
   (interactive "p")
   (unless (use-region-p) (set-mark (point)))
   (forward-word count))
 
-(defun init/select-to-prev-word (count)
+(defun init/select-to-backward-word (count)
   (interactive "p")
   (unless (use-region-p) (set-mark (point)))
   (backward-word count))
+
+(defun init/select-to-forward-sexp (count)
+  (interactive "p")
+  (unless (use-region-p) (set-mark (point)))
+  (forward-sexp count))
+
+(defun init/select-to-backward-sexp (count)
+  (interactive "p")
+  (unless (use-region-p) (set-mark (point)))
+  (backward-sexp count))
 
 (defun init/kill-selection (count)
   (interactive "p")
@@ -142,13 +152,19 @@
  ("M" init/select-line-before-point)
  ("I" init/select-line-after-point)
  ("N" init/select-to-next-line)
- ("E" init/select-to-prev-line)
+ ("E" init/select-to-previous-line)
 
  ("w" forward-word)
  ("b" backward-word)
 
- ("W" init/select-to-next-word)
- ("B" init/select-to-prev-word)
+ ("W" init/select-to-forward-word)
+ ("B" init/select-to-backward-word)
+
+ ("s" forward-sexp)
+ ("r" backward-sexp)
+
+ ("S" init/select-to-forward-sexp)
+ ("R" init/select-to-backward-sexp)
 
  ("g"
   (("m" back-to-indentation)
