@@ -1,11 +1,22 @@
+;; ------------------------------------------------------------
+
+(setq gc-cons-threshold (* 10 1024 1024))
 (setq make-backup-files nil)
 
+;; ------------------------------------------------------------
+
+(tool-bar-mode -1)
+(line-number-mode 1)
+(column-number-mode 1)
 (setq display-line-numbers-type 'visual)
 (global-display-line-numbers-mode)
+
+;; ------------------------------------------------------------
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (if (file-exists-p custom-file) (load custom-file))
 
+;; ------------------------------------------------------------
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -16,6 +27,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+;; ------------------------------------------------------------
 
 (use-package ryo-modal
   :bind ("C-z" . ryo-modal-mode)
@@ -114,6 +126,8 @@
 	(goto-line line)
       (beginning-of-buffer)))
 
+  ;; ------------------------------------------------------------
+
   (defun init/ryo-modal-setup ()
     (ryo-modal-keys
      ("z" ryo-modal-mode)
@@ -130,7 +144,11 @@
 	 ("m" windmove-left)
 	 ("i" windmove-right)
 	 ("n" windmove-down)
-	 ("e" windmove-up)))))
+	 ("e" windmove-up)
+	 ("M" shrink-window-horizontally)
+	 ("I" enlarge-window-horizontally)
+	 ("N" shrink-window)
+	 ("E" enlarge-window)))))
 
      (":" execute-extended-command)
 
@@ -207,13 +225,16 @@
      ("8" "M-8")
      ("9" "M-9"))))
 
+;; ------------------------------------------------------------
 
 (use-package color-theme-sanityinc-tomorrow
   :config (load-theme 'sanityinc-tomorrow-night))
 
+;; ------------------------------------------------------------
 
 (use-package which-key
   :config (which-key-mode))
 
+;; ------------------------------------------------------------
 
 (use-package kotlin-mode)
