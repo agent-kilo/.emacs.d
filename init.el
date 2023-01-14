@@ -5,7 +5,9 @@
 
 ;; ------------------------------------------------------------
 
+;(menu-bar-mode -1)
 (tool-bar-mode -1)
+(scroll-bar-mode -1)
 (line-number-mode 1)
 (column-number-mode 1)
 (setq display-line-numbers-type 'visual)
