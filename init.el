@@ -226,6 +226,9 @@
      ("p" yank)
      ("u" undo)
 
+     ("Q" kmacro-start-macro-or-insert-counter)
+     ("q" kmacro-end-or-call-macro)
+
      ("a" forward-char :exit t)
      ("A" move-end-of-line :exit t)
      ("Z" back-to-indentation :exit t)
