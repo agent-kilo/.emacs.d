@@ -31,6 +31,43 @@
 
 ;; ------------------------------------------------------------
 
+(global-unset-key (kbd "C-t")) ;; Was transpose-chars; Use C-t for window management instead
+
+(defvar init/win-key-map (make-sparse-keymap))
+(define-key (current-global-map) (kbd "C-t") init/win-key-map)
+
+(define-key init/win-key-map (kbd "m") 'windmove-left)
+(define-key init/win-key-map (kbd "i") 'windmove-right)
+(define-key init/win-key-map (kbd "n") 'windmove-down)
+(define-key init/win-key-map (kbd "e") 'windmove-up)
+(define-key init/win-key-map (kbd "C-m") 'windmove-left)
+(define-key init/win-key-map (kbd "C-i") 'windmove-right)
+(define-key init/win-key-map (kbd "C-n") 'windmove-down)
+(define-key init/win-key-map (kbd "C-e") 'windmove-up)
+
+(define-key init/win-key-map (kbd "o") 'previous-window-any-frame)
+(define-key init/win-key-map (kbd "t") 'next-window-any-frame)
+(define-key init/win-key-map (kbd "C-o") 'previous-window-any-frame)
+(define-key init/win-key-map (kbd "C-t") 'next-window-any-frame)
+
+(define-key init/win-key-map (kbd "s") 'split-window-vertically)
+(define-key init/win-key-map (kbd "v") 'split-window-horizontally)
+(define-key init/win-key-map (kbd "q") 'delete-window)
+(define-key init/win-key-map (kbd "d") 'delete-other-windows)
+(define-key init/win-key-map (kbd "C-s") 'split-window-vertically)
+(define-key init/win-key-map (kbd "C-v") 'split-window-horizontally)
+(define-key init/win-key-map (kbd "C-q") 'delete-window)
+(define-key init/win-key-map (kbd "C-d") 'delete-other-windows)
+
+(define-key init/win-key-map (kbd "M") 'shrink-window-horizontally)
+(define-key init/win-key-map (kbd "I") 'enlarge-window-horizontally)
+(define-key init/win-key-map (kbd "N") 'shrink-window)
+(define-key init/win-key-map (kbd "E") 'enlarge-window)
+(define-key init/win-key-map (kbd "C-M") 'shrink-window-horizontally)
+(define-key init/win-key-map (kbd "C-I") 'enlarge-window-horizontally)
+(define-key init/win-key-map (kbd "C-N") 'shrink-window)
+(define-key init/win-key-map (kbd "C-E") 'enlarge-window)
+
 (use-package ryo-modal
   :bind ("C-z" . ryo-modal-mode)
   :hook (after-init . init/ryo-modal-setup)
@@ -135,22 +172,7 @@
      ("z" ryo-modal-mode)
 
      (","
-      (("h" help-command :name "Help")
-       ("t"
-	(("s" split-window-vertically)
-	 ("v" split-window-horizontally)
-	 ("q" delete-window)
-	 ("d" delete-other-windows)
-	 ("o" previous-window-any-frame)
-	 ("t" next-window-any-frame)
-	 ("m" windmove-left)
-	 ("i" windmove-right)
-	 ("n" windmove-down)
-	 ("e" windmove-up)
-	 ("M" shrink-window-horizontally)
-	 ("I" enlarge-window-horizontally)
-	 ("N" shrink-window)
-	 ("E" enlarge-window)))))
+      (("h" help-command :name "Help")))
 
      (":" execute-extended-command)
 
@@ -212,6 +234,7 @@
      ("c" init/kill-selection :exit t))
 
     (define-key ryo-modal-mode-map (kbd ", x") ctl-x-map)
+    (define-key ryo-modal-mode-map (kbd ", t") init/win-key-map)
 
     (ryo-modal-keys
      (:norepeat t)
