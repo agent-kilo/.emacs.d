@@ -229,6 +229,13 @@
 
 ;; ------------------------------------------------------------
 
+(use-package ido
+  :config
+  (ido-mode t)
+  (setq ido-enable-flex-matching t))
+
+;; ------------------------------------------------------------
+
 (use-package color-theme-sanityinc-tomorrow
   :config (load-theme 'sanityinc-tomorrow-night))
 
