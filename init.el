@@ -36,7 +36,7 @@
 (global-unset-key (kbd "C-t")) ;; Was transpose-chars; Use C-t for window management instead
 
 (defvar init/win-key-map (make-sparse-keymap))
-(define-key (current-global-map) (kbd "C-t") 'init/win-key-map)
+(define-key (current-global-map) (kbd "C-t") init/win-key-map)
 
 (define-key init/win-key-map (kbd "m") 'windmove-left)
 (define-key init/win-key-map (kbd "i") 'windmove-right)
