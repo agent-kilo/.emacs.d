@@ -82,6 +82,10 @@
     (interactive)
     (deactivate-mark))
 
+  (defun init/ensure-mark-active ()
+    (interactive)
+    (unless (use-region-p) (set-mark (point))))
+
   (defun init/open-lines-below (count)
     (interactive "p")
     (end-of-line)
@@ -100,46 +104,6 @@
     (beginning-of-line)
     (unless (use-region-p) (set-mark (point)))
     (forward-line count))
-
-  (defun init/select-line-before-point ()
-    (interactive)
-    (set-mark (point))
-    (beginning-of-line))
-
-  (defun init/select-line-after-point ()
-    (interactive)
-    (set-mark (point))
-    (end-of-line))
-
-  (defun init/select-to-next-line (count)
-    (interactive "p")
-    (unless (use-region-p) (set-mark (point)))
-    (next-line count))
-
-  (defun init/select-to-previous-line (count)
-    (interactive "p")
-    (unless (use-region-p) (set-mark (point)))
-    (previous-line count))
-
-  (defun init/select-to-forward-word (count)
-    (interactive "p")
-    (unless (use-region-p) (set-mark (point)))
-    (forward-word count))
-
-  (defun init/select-to-backward-word (count)
-    (interactive "p")
-    (unless (use-region-p) (set-mark (point)))
-    (backward-word count))
-
-  (defun init/select-to-forward-sexp (count)
-    (interactive "p")
-    (unless (use-region-p) (set-mark (point)))
-    (forward-sexp count))
-
-  (defun init/select-to-backward-sexp (count)
-    (interactive "p")
-    (unless (use-region-p) (set-mark (point)))
-    (backward-sexp count))
 
   (defun init/kill-selection (count)
     (interactive "p")
@@ -186,22 +150,22 @@
      ("n" next-line)
      ("e" previous-line)
 
-     ("M" init/select-line-before-point)
-     ("I" init/select-line-after-point)
-     ("N" init/select-to-next-line)
-     ("E" init/select-to-previous-line)
+     ("M" beginning-of-line :first '(init/ensure-mark-active))
+     ("I" end-of-line :first '(init/ensure-mark-active))
+     ("N" next-line :first '(init/ensure-mark-active))
+     ("E" previous-line :first '(init/ensure-mark-active))
 
      ("w" forward-word)
      ("b" backward-word)
 
-     ("W" init/select-to-forward-word)
-     ("B" init/select-to-backward-word)
+     ("W" forward-word :first '(init/ensure-mark-active))
+     ("B" backward-word :first '(init/ensure-mark-active))
 
      ("s" forward-sexp)
      ("r" backward-sexp)
 
-     ("S" init/select-to-forward-sexp)
-     ("R" init/select-to-backward-sexp)
+     ("S" forward-sexp :first '(init/ensure-mark-active))
+     ("R" backward-sexp :first '(init/ensure-mark-active))
 
      ("g"
       (("m" back-to-indentation)
