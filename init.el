@@ -75,6 +75,7 @@
   :hook (after-init . init/ryo-modal-setup)
   :config
 
+  (add-hook 'text-mode-hook #'(lambda () (ryo-modal-mode 1)))
   (add-hook 'prog-mode-hook #'(lambda () (ryo-modal-mode 1)))
 
   (defun init/deactivate-mark ()
