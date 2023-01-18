@@ -110,28 +110,28 @@
   (defun init/kill-selection (count)
     (interactive "p")
     (if (use-region-p)
-	(kill-region (region-beginning) (region-end))
+        (kill-region (region-beginning) (region-end))
       (progn
-	(set-mark (point))
-	(forward-char count)
-	(kill-region (region-beginning) (region-end))
-	(deactivate-mark))))
+        (set-mark (point))
+        (forward-char count)
+        (kill-region (region-beginning) (region-end))
+        (deactivate-mark))))
 
   (defun init/kill-ring-save-selection (count)
     (interactive "p")
     (if (use-region-p)
-	(kill-ring-save (region-beginning) (region-end))
+        (kill-ring-save (region-beginning) (region-end))
       (progn
-	(set-mark (point))
-	(forward-char count)
-	(kill-ring-save (region-beginning) (region-end))
-	(exchange-point-and-mark)
-	(deactivate-mark))))
+        (set-mark (point))
+        (forward-char count)
+        (kill-ring-save (region-beginning) (region-end))
+        (exchange-point-and-mark)
+        (deactivate-mark))))
 
   (defun init/goto-line (&optional line)
     (interactive "p")
     (if line
-	(goto-line line)
+        (goto-line line)
       (beginning-of-buffer)))
 
   ;; ------------------------------------------------------------
