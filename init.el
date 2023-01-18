@@ -3,6 +3,8 @@
 (setq gc-cons-threshold (* 10 1024 1024))
 (setq make-backup-files nil)
 
+(setq-default indent-tabs-mode nil)
+
 ;; ------------------------------------------------------------
 
 ;(menu-bar-mode -1)
