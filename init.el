@@ -16,9 +16,7 @@
 (global-display-line-numbers-mode)
 
 (defvar init/default-font "TamzenForPowerline-11:antialias=none")
-(when (x-list-fonts init/default-font)
-  (add-to-list 'default-frame-alist `(font . ,init/default-font))
-  (set-face-attribute 'default t :font init/default-font))
+(add-to-list 'default-frame-alist `(font . ,init/default-font))
 
 ;; ------------------------------------------------------------
 
