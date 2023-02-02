@@ -4,6 +4,7 @@
 (setq make-backup-files nil)
 
 (setq-default indent-tabs-mode nil)
+(setq tab-always-indent 'complete)
 
 ;; ------------------------------------------------------------
 
