@@ -145,7 +145,7 @@
      ("z" ryo-modal-mode)
 
      (","
-      (("h" help-command :name "Help")))
+      (("h" help-command)))
 
      (":" execute-extended-command)
 
@@ -189,7 +189,9 @@
      ("f" isearch-forward)
      ("M-f" isearch-backward)
 
-     ("v" set-mark-command)
+     ;; See expand-region instead
+     ;;("v" set-mark-command)
+
      (";" init/deactivate-mark)
      ("M-;" exchange-point-and-mark)
      ("x" init/select-lines)
@@ -242,6 +244,13 @@
 
 (use-package which-key
   :config (which-key-mode))
+
+;; ------------------------------------------------------------
+
+(use-package expand-region
+  :config
+  (ryo-modal-keys
+   ("v" er/expand-region)))
 
 ;; ------------------------------------------------------------
 
