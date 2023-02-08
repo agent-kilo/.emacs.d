@@ -67,10 +67,10 @@
     (define-key map (kbd "I") 'enlarge-window-horizontally)
     (define-key map (kbd "N") 'shrink-window)
     (define-key map (kbd "E") 'enlarge-window)
-    (define-key map (kbd "C-M") 'shrink-window-horizontally)
-    (define-key map (kbd "C-I") 'enlarge-window-horizontally)
-    (define-key map (kbd "C-N") 'shrink-window)
-    (define-key map (kbd "C-E") 'enlarge-window)
+    (define-key map (kbd "C-S-M") 'shrink-window-horizontally)
+    (define-key map (kbd "C-S-I") 'enlarge-window-horizontally)
+    (define-key map (kbd "C-S-N") 'shrink-window)
+    (define-key map (kbd "C-S-E") 'enlarge-window)
 
     map))
 
