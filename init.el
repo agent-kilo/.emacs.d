@@ -247,7 +247,8 @@
 (use-package expand-region
   :config
   (ryo-modal-keys
-   ("v" er/expand-region)))
+   ("v" er/expand-region)
+   ("V" set-mark-command)))
 
 ;; ------------------------------------------------------------
 
