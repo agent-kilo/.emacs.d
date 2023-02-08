@@ -254,7 +254,30 @@
 
 ;; ------------------------------------------------------------
 
-(use-package multiple-cursors)
+(use-package multiple-cursors
+  :config
+  (defvar init/mc-key-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "l") 'mc/edit-lines)
+      (define-key map (kbd "a") 'mc/mark-all-like-this)
+      (define-key map (kbd "n") 'mc/mark-next-like-this)
+      (define-key map (kbd "N") 'mc/unmark-next-like-this)
+      (define-key map (kbd "s") 'mc/skip-to-next-like-this)
+      (define-key map (kbd "p") 'mc/mark-previous-like-this)
+      (define-key map (kbd "P") 'mc/unmark-previous-like-this)
+      (define-key map (kbd "r") 'mc/skip-to-previous-like-this)
+      (define-key map (kbd "m") 'mc/mark-more-like-this-extended)
+      map))
+
+  (define-minor-mode init/mc-mode
+    nil
+    :init-value nil
+    :lighter " mc"
+    :keymap init/mc-key-map)
+
+  (ryo-modal-keys
+   (","
+    (("c" init/mc-mode)))))
 
 ;; ------------------------------------------------------------
 
