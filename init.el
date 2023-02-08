@@ -189,12 +189,6 @@
        ("g" init/goto-line)
        ("G" end-of-buffer)))
 
-     ("f" isearch-forward)
-     ("M-f" isearch-backward)
-
-     ;; See expand-region instead
-     ;;("v" set-mark-command)
-
      (";" init/deactivate-mark)
      ("M-;" exchange-point-and-mark)
      ("x" init/select-lines)
@@ -261,15 +255,12 @@
   :config
   (defvar init/mc-key-map
     (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "l") 'mc/edit-lines)
-      (define-key map (kbd "a") 'mc/mark-all-like-this)
       (define-key map (kbd "n") 'mc/mark-next-like-this)
       (define-key map (kbd "N") 'mc/unmark-next-like-this)
       (define-key map (kbd "s") 'mc/skip-to-next-like-this)
       (define-key map (kbd "p") 'mc/mark-previous-like-this)
       (define-key map (kbd "P") 'mc/unmark-previous-like-this)
       (define-key map (kbd "r") 'mc/skip-to-previous-like-this)
-      (define-key map (kbd "m") 'mc/mark-more-like-this-extended)
       map))
 
   (define-minor-mode init/mc-mode
@@ -280,7 +271,21 @@
 
   (ryo-modal-keys
    (","
-    (("c" init/mc-mode)))))
+    (("c"
+      (("l" mc/edit-lines)
+       ("a" mc/mark-all-like-this)
+       ("m" init/mc-mode)))))))
+
+;; ------------------------------------------------------------
+
+(use-package phi-search
+  :config
+  (define-key (current-global-map) (kbd "C-s") 'phi-search)
+  (define-key (current-global-map) (kbd "C-r") 'phi-search-backward)
+
+  (ryo-modal-keys
+   ("f" phi-search)
+   ("M-f" phi-search-backward)))
 
 ;; ------------------------------------------------------------
 
