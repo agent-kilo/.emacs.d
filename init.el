@@ -37,44 +37,47 @@
 
 ;; ------------------------------------------------------------
 
-(define-key (current-global-map) (kbd "M-n") 'hippie-expand)
+(defvar init/win-key-map
+  (let ((map (make-sparse-keymap)))
+
+    (define-key map (kbd "m") 'windmove-left)
+    (define-key map (kbd "i") 'windmove-right)
+    (define-key map (kbd "n") 'windmove-down)
+    (define-key map (kbd "e") 'windmove-up)
+    (define-key map (kbd "C-m") 'windmove-left)
+    (define-key map (kbd "C-i") 'windmove-right)
+    (define-key map (kbd "C-n") 'windmove-down)
+    (define-key map (kbd "C-e") 'windmove-up)
+
+    (define-key map (kbd "o") 'previous-window-any-frame)
+    (define-key map (kbd "t") 'next-window-any-frame)
+    (define-key map (kbd "C-o") 'previous-window-any-frame)
+    (define-key map (kbd "C-t") 'next-window-any-frame)
+
+    (define-key map (kbd "s") 'split-window-vertically)
+    (define-key map (kbd "v") 'split-window-horizontally)
+    (define-key map (kbd "q") 'delete-window)
+    (define-key map (kbd "d") 'delete-other-windows)
+    (define-key map (kbd "C-s") 'split-window-vertically)
+    (define-key map (kbd "C-v") 'split-window-horizontally)
+    (define-key map (kbd "C-q") 'delete-window)
+    (define-key map (kbd "C-d") 'delete-other-windows)
+
+    (define-key map (kbd "M") 'shrink-window-horizontally)
+    (define-key map (kbd "I") 'enlarge-window-horizontally)
+    (define-key map (kbd "N") 'shrink-window)
+    (define-key map (kbd "E") 'enlarge-window)
+    (define-key map (kbd "C-M") 'shrink-window-horizontally)
+    (define-key map (kbd "C-I") 'enlarge-window-horizontally)
+    (define-key map (kbd "C-N") 'shrink-window)
+    (define-key map (kbd "C-E") 'enlarge-window)
+
+    map))
 
 (global-unset-key (kbd "C-t")) ;; Was transpose-chars; Use C-t for window management instead
-
-(defvar init/win-key-map (make-sparse-keymap))
 (define-key (current-global-map) (kbd "C-t") init/win-key-map)
+(define-key (current-global-map) (kbd "M-n") 'hippie-expand)
 
-(define-key init/win-key-map (kbd "m") 'windmove-left)
-(define-key init/win-key-map (kbd "i") 'windmove-right)
-(define-key init/win-key-map (kbd "n") 'windmove-down)
-(define-key init/win-key-map (kbd "e") 'windmove-up)
-(define-key init/win-key-map (kbd "C-m") 'windmove-left)
-(define-key init/win-key-map (kbd "C-i") 'windmove-right)
-(define-key init/win-key-map (kbd "C-n") 'windmove-down)
-(define-key init/win-key-map (kbd "C-e") 'windmove-up)
-
-(define-key init/win-key-map (kbd "o") 'previous-window-any-frame)
-(define-key init/win-key-map (kbd "t") 'next-window-any-frame)
-(define-key init/win-key-map (kbd "C-o") 'previous-window-any-frame)
-(define-key init/win-key-map (kbd "C-t") 'next-window-any-frame)
-
-(define-key init/win-key-map (kbd "s") 'split-window-vertically)
-(define-key init/win-key-map (kbd "v") 'split-window-horizontally)
-(define-key init/win-key-map (kbd "q") 'delete-window)
-(define-key init/win-key-map (kbd "d") 'delete-other-windows)
-(define-key init/win-key-map (kbd "C-s") 'split-window-vertically)
-(define-key init/win-key-map (kbd "C-v") 'split-window-horizontally)
-(define-key init/win-key-map (kbd "C-q") 'delete-window)
-(define-key init/win-key-map (kbd "C-d") 'delete-other-windows)
-
-(define-key init/win-key-map (kbd "M") 'shrink-window-horizontally)
-(define-key init/win-key-map (kbd "I") 'enlarge-window-horizontally)
-(define-key init/win-key-map (kbd "N") 'shrink-window)
-(define-key init/win-key-map (kbd "E") 'enlarge-window)
-(define-key init/win-key-map (kbd "C-M") 'shrink-window-horizontally)
-(define-key init/win-key-map (kbd "C-I") 'enlarge-window-horizontally)
-(define-key init/win-key-map (kbd "C-N") 'shrink-window)
-(define-key init/win-key-map (kbd "C-E") 'enlarge-window)
 
 (use-package ryo-modal
   :bind ("C-z" . ryo-modal-mode)
