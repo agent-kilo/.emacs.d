@@ -275,6 +275,8 @@
     (("c"
       (("l" mc/edit-lines)
        ("a" mc/mark-all-like-this)
+       ("s" mc/mark-all-in-region)
+       ("r" mc/mark-all-in-region-regexp)
        ("m" init/mc-mode)))))))
 
 ;; ------------------------------------------------------------
