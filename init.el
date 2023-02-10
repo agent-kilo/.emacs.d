@@ -262,6 +262,7 @@
       (define-key map (kbd "p") 'mc/mark-previous-like-this)
       (define-key map (kbd "P") 'mc/unmark-previous-like-this)
       (define-key map (kbd "r") 'mc/skip-to-previous-like-this)
+      (define-key map (kbd "m") 'init/mc-mode)
       map))
 
   (define-minor-mode init/mc-mode
