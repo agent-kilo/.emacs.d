@@ -188,6 +188,7 @@
 
        ("g" init/goto-line)
        ("G" end-of-buffer)))
+     ("G" end-of-buffer)
 
      (";" init/deactivate-mark)
      ("M-;" exchange-point-and-mark)
