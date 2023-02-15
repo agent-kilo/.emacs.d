@@ -313,3 +313,13 @@
 ;; ------------------------------------------------------------
 
 (use-package zig-mode)
+
+;; ------------------------------------------------------------
+
+(use-package lilypond-mode
+  :ensure nil  ;; local package
+  :init
+  (load-library "lilypond-init")
+  (add-hook 'LilyPond-mode-hook #'(lambda () (ryo-modal-mode 1))))
+
+;; ------------------------------------------------------------
