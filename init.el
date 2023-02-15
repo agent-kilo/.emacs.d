@@ -22,7 +22,13 @@
 ;; ------------------------------------------------------------
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
-(if (file-exists-p custom-file) (load custom-file))
+(if (file-readable-p custom-file) (load custom-file))
+
+(defvar init/lisp-dir (concat user-emacs-directory "lisp/"))
+(if (file-readable-p init/lisp-dir)
+    (let ((default-directory init/lisp-dir))
+      (normal-top-level-add-to-load-path '("."))
+      (normal-top-level-add-subdirs-to-load-path)))
 
 ;; ------------------------------------------------------------
 
