@@ -4,3 +4,4 @@ ido.last
 auto-save-list/
 elpa/
 eln-cache/
+local-env.el

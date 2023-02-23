@@ -323,3 +323,6 @@
   (add-hook 'LilyPond-mode-hook #'(lambda () (ryo-modal-mode 1))))
 
 ;; ------------------------------------------------------------
+
+(defvar init/local-env-file (concat user-emacs-directory "local-env.el"))
+(if (file-readable-p init/local-env-file) (load init/local-env-file))
