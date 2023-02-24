@@ -1,7 +1,11 @@
 *~
 \#*#
-ido.last
-auto-save-list/
-elpa/
-eln-cache/
-local-env.el
+/ido.last
+/auto-save-list/
+/elpa/
+/eln-cache/
+/local-env.el
+/eshell/
+/image-dired/
+/server/
+/transient/
