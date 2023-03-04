@@ -40,6 +40,7 @@
   (package-install 'use-package))
 (require 'use-package)
 (setq use-package-always-ensure t)
+;(setq use-package-compute-statistics t)
 
 ;; ------------------------------------------------------------
 
@@ -88,6 +89,7 @@
 (use-package ryo-modal
   :bind ("C-z" . ryo-modal-mode)
   :hook (after-init . init/ryo-modal-setup)
+  :defer t
   :config
 
   (add-hook 'text-mode-hook #'(lambda () (ryo-modal-mode 1)))
@@ -247,12 +249,16 @@
 ;; ------------------------------------------------------------
 
 (use-package which-key
-  :config (which-key-mode))
+  :defer t
+  :config
+  (which-key-mode))
 
 ;; ------------------------------------------------------------
 
 (use-package expand-region
-  :config
+  :defer t
+  :after (:all ryo-modal)
+  :init
   (ryo-modal-keys
    ("v" er/expand-region)
    ("V" set-mark-command)))
@@ -260,7 +266,9 @@
 ;; ------------------------------------------------------------
 
 (use-package multiple-cursors
-  :config
+  :defer t
+  :after (:all ryo-modal)
+  :init
   (defvar init/mc-key-map
     (let ((map (make-sparse-keymap)))
       (define-key map (kbd "n") 'mc/mark-next-like-this)
@@ -290,7 +298,9 @@
 ;; ------------------------------------------------------------
 
 (use-package phi-search
-  :config
+  :defer t
+  :after (:all ryo-modal)
+  :init
   (define-key (current-global-map) (kbd "C-s") 'phi-search)
   (define-key (current-global-map) (kbd "C-r") 'phi-search-backward)
 
@@ -300,28 +310,36 @@
 
 ;; ------------------------------------------------------------
 
-(use-package eglot)
+(use-package eglot
+  :defer t)
 
 ;; ------------------------------------------------------------
 
-(use-package vc-fossil)
+(use-package vc-fossil
+  :defer t
+  :init
+  (add-to-list 'vc-handled-backends 'Fossil t))
 
 ;; ------------------------------------------------------------
 
-(use-package markdown-mode)
+(use-package markdown-mode
+  :defer t)
 
 ;; ------------------------------------------------------------
 
-(use-package kotlin-mode)
+(use-package kotlin-mode
+  :defer t)
 
 ;; ------------------------------------------------------------
 
-(use-package zig-mode)
+(use-package zig-mode
+  :defer t)
 
 ;; ------------------------------------------------------------
 
 (use-package lilypond-mode
   :ensure nil  ;; local package
+  :defer t
   :init
   (load-library "lilypond-init")
   (add-hook 'LilyPond-mode-hook #'(lambda () (ryo-modal-mode 1))))
