@@ -323,7 +323,9 @@
 ;; ------------------------------------------------------------
 
 (use-package vterm
-  :defer t)
+  :defer t
+  :config
+  (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1))))
 
 ;; ------------------------------------------------------------
 
