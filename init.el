@@ -6,6 +6,9 @@
 (setq-default indent-tabs-mode nil)
 (setq tab-always-indent 'complete)
 
+(savehist-mode 1)
+(add-to-list 'savehist-additional-variables 'last-kbd-macro)
+
 ;; ------------------------------------------------------------
 
 ;(menu-bar-mode -1)
