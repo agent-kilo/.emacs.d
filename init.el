@@ -363,5 +363,13 @@
 
 ;; ------------------------------------------------------------
 
+(use-package janet-mode
+  :ensure nil  ;; local package
+  :defer t
+  :init
+  (load-library "janet-mode-autoloads"))
+
+;; ------------------------------------------------------------
+
 (defvar init/local-env-file (concat user-emacs-directory "local-env.el"))
 (if (file-readable-p init/local-env-file) (load init/local-env-file))
