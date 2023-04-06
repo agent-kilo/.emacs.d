@@ -7,7 +7,7 @@
    '("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default))
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(lilypond-mode zig-mode kotlin-mode markdown-mode vterm vc-fossil eglot citre phi-search multiple-cursors expand-region which-key color-theme-sanityinc-tomorrow ryo-modal use-package)))
+   '(zig-mode kotlin-mode markdown-mode vterm vc-fossil eglot citre phi-search multiple-cursors expand-region which-key color-theme-sanityinc-tomorrow ryo-modal use-package)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
