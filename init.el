@@ -316,12 +316,16 @@
 ;; ------------------------------------------------------------
 
 (use-package mlscroll
-  :config
-  (setq mlscroll-right-align nil)
-  (setq mlscroll-alter-percent-position 'replace)
-  ;(setq mlscroll-in-color (face-attribute 'mode-line :foreground nil t))
-  ;(setq mlscroll-out-color (face-attribute 'mode-line-inactive :background nil t))
-  (mlscroll-mode 1))
+  :defer t
+  :init
+  (defun init/mlscroll-setup ()
+    (setq mlscroll-alter-percent-position nil)
+    (mlscroll-mode 1))
+
+  (if (daemonp)
+      ;; XXX: doesn't work in daemon mode in tui, bug?
+      (add-hook 'server-after-make-frame-hook 'init/mlscroll-setup)
+    (add-hook 'after-init-hook 'init/mlscroll-setup)))
 
 ;; ------------------------------------------------------------
 
