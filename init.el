@@ -349,9 +349,11 @@
   :init
   (require 'citre-config)
 
+  :config
   (ryo-modal-keys
    ("g"
-    (("p" citre-ace-peek)))))
+    (("p" citre-ace-peek)
+     ("r" citre-peek-restore)))))
 
 ;; ------------------------------------------------------------
 
