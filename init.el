@@ -315,17 +315,9 @@
 
 ;; ------------------------------------------------------------
 
-(use-package mlscroll
-  :defer t
-  :init
-  (defun init/mlscroll-setup ()
-    (setq mlscroll-alter-percent-position nil)
-    (mlscroll-mode 1))
-
-  (if (daemonp)
-      ;; XXX: doesn't work in daemon mode in tui, bug?
-      (add-hook 'server-after-make-frame-hook 'init/mlscroll-setup)
-    (add-hook 'after-init-hook 'init/mlscroll-setup)))
+(use-package sml-modeline
+  :config
+  (sml-modeline-mode 1))
 
 ;; ------------------------------------------------------------
 
