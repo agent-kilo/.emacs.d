@@ -205,8 +205,6 @@
        ("U" up-list)
        ("d" down-list)
 
-       ("t" imenu)
-
        ("g" init/goto-line)
        ("G" end-of-buffer)))
      ("G" end-of-buffer)
@@ -332,6 +330,16 @@
 (use-package sml-modeline
   :config
   (sml-modeline-mode 1))
+
+;; ------------------------------------------------------------
+
+(use-package imenu-anywhere
+  :defer t
+  :after (:all ryo-modal ido)
+  :init
+  (ryo-modal-keys
+   ("g"
+    (("t" ido-imenu-anywhere)))))
 
 ;; ------------------------------------------------------------
 
