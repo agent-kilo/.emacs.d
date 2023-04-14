@@ -201,6 +201,10 @@
        ("w" forward-sentence)
        ("b" backward-sentence)
 
+       ("u" backward-up-list)
+       ("U" up-list)
+       ("d" down-list)
+
        ("g" init/goto-line)
        ("G" end-of-buffer)))
      ("G" end-of-buffer)
