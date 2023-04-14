@@ -345,8 +345,13 @@
 
 (use-package citre
   :defer t
+  :after (:all ryo-modal)
   :init
-  (require 'citre-config))
+  (require 'citre-config)
+
+  (ryo-modal-keys
+   ("g"
+    (("p" citre-ace-peek)))))
 
 ;; ------------------------------------------------------------
 
