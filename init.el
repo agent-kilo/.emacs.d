@@ -256,6 +256,12 @@
 
 ;; ------------------------------------------------------------
 
+(use-package which-func
+  :config
+  (which-function-mode 1))
+
+;; ------------------------------------------------------------
+
 (use-package color-theme-sanityinc-tomorrow
   :config (load-theme 'sanityinc-tomorrow-night))
 
