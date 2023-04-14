@@ -205,6 +205,8 @@
        ("U" up-list)
        ("d" down-list)
 
+       ("t" imenu)
+
        ("g" init/goto-line)
        ("G" end-of-buffer)))
      ("G" end-of-buffer)
