@@ -11,6 +11,8 @@
 (savehist-mode 1)
 (add-to-list 'savehist-additional-variables 'last-kbd-macro)
 
+;(setq debug-on-error t)
+
 ;; ------------------------------------------------------------
 
 ;(menu-bar-mode -1)
