@@ -345,11 +345,22 @@
 
 (use-package citre
   :defer t
-  :after (:all ryo-modal)
+  :after (:all ryo-modal color-theme-sanityinc-tomorrow)
   :init
   (require 'citre-config)
 
   :config
+  (setq citre-peek-file-content-height 22)
+  (setq citre-peek-tag-list-height 3)
+  ;; display-line-numbers-mode tears the border apart when running without this
+  (setq citre-peek-fill-fringe nil)
+
+  (let* ((tomorrow-night-colors (alist-get 'night color-theme-sanityinc-tomorrow-colors))
+         (color-blue (alist-get 'blue tomorrow-night-colors))
+         (color-bg (alist-get 'background tomorrow-night-colors)))
+    (set-face-attribute 'citre-peek-border-face nil :background color-blue)
+    (set-face-attribute 'citre-peek-ace-str-face nil :foreground color-bg :background color-blue))
+
   (ryo-modal-keys
    ("g"
     (("p" citre-ace-peek)
