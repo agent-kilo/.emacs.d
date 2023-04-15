@@ -348,6 +348,11 @@
   :after (:all ryo-modal color-theme-sanityinc-tomorrow)
   :init
   (require 'citre-config)
+  (autoload 'citre-peek-restore "citre" "Should have been autoloaded by citre...." t nil)
+  (ryo-modal-keys
+   ("g"
+    (("p" citre-ace-peek)
+     ("r" citre-peek-restore))))
 
   :config
   (setq citre-peek-file-content-height 22)
@@ -359,12 +364,7 @@
          (color-blue (alist-get 'blue tomorrow-night-colors))
          (color-bg (alist-get 'background tomorrow-night-colors)))
     (set-face-attribute 'citre-peek-border-face nil :background color-blue)
-    (set-face-attribute 'citre-peek-ace-str-face nil :foreground color-bg :background color-blue))
-
-  (ryo-modal-keys
-   ("g"
-    (("p" citre-ace-peek)
-     ("r" citre-peek-restore)))))
+    (set-face-attribute 'citre-peek-ace-str-face nil :foreground color-bg :background color-blue)))
 
 ;; ------------------------------------------------------------
 
