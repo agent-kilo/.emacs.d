@@ -355,6 +355,23 @@
      ("r" citre-peek-restore))))
 
   :config
+  (let ((map citre-peek-keymap))
+    (define-key map (kbd "n") 'citre-peek-next-line)
+    (define-key map (kbd "e") 'citre-peek-prev-line)
+    (define-key map (kbd "N") 'citre-peek-next-tag)
+    (define-key map (kbd "E") 'citre-peek-prev-tag)
+    (define-key map (kbd "i") 'citre-peek-chain-forward)
+    (define-key map (kbd "m") 'citre-peek-chain-backward)
+    (define-key map (kbd "I") 'citre-peek-next-branch)
+    (define-key map (kbd "M") 'citre-peek-prev-branch)
+
+    (define-key map (kbd "l p") 'citre-peek-through)
+    (define-key map (kbd "l r") 'citre-peek-through-reference)
+    (define-key map (kbd "l d") 'citre-peek-delete-branch)
+    (define-key map (kbd "l D") 'citre-peek-delete-branches)
+    (define-key map (kbd "l f") 'citre-peek-make-current-tag-first)
+    (define-key map (kbd "l j") 'citre-peek-jump))
+
   (setq citre-peek-file-content-height 22)
   (setq citre-peek-tag-list-height 3)
   ;; display-line-numbers-mode tears the border apart when running without this
