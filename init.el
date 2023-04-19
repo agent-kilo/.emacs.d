@@ -86,11 +86,35 @@
     (define-key map (kbd "C-S-N") 'shrink-window)
     (define-key map (kbd "C-S-E") 'enlarge-window)
 
+    (define-key map (kbd "k") 'vterm)
+    (define-key map (kbd "K") 'vterm-other-window)
+    (define-key map (kbd "C-k") 'vterm)
+    (define-key map (kbd "C-S-K") 'vterm-other-window)
+    (define-key map (kbd "h") 'eshell)
+    (define-key map (kbd "C-h") 'eshell)
+
     map))
 
 (global-unset-key (kbd "C-t")) ;; Was transpose-chars; Use C-t for window management instead
 (define-key (current-global-map) (kbd "C-t") init/win-key-map)
 (define-key (current-global-map) (kbd "M-n") 'hippie-expand)
+
+(defun init/bind-comma-keys ()
+  (define-key (current-local-map) (kbd ", h") 'help-command)
+  (define-key (current-local-map) (kbd ", x") ctl-x-map)
+  (define-key (current-local-map) (kbd ", t") init/win-key-map)
+
+  (define-key (current-local-map) (kbd "-") (kbd "M--"))
+  (define-key (current-local-map) (kbd "0") (kbd "M-0"))
+  (define-key (current-local-map) (kbd "1") (kbd "M-1"))
+  (define-key (current-local-map) (kbd "2") (kbd "M-2"))
+  (define-key (current-local-map) (kbd "3") (kbd "M-3"))
+  (define-key (current-local-map) (kbd "4") (kbd "M-4"))
+  (define-key (current-local-map) (kbd "5") (kbd "M-5"))
+  (define-key (current-local-map) (kbd "6") (kbd "M-6"))
+  (define-key (current-local-map) (kbd "7") (kbd "M-7"))
+  (define-key (current-local-map) (kbd "8") (kbd "M-8"))
+  (define-key (current-local-map) (kbd "9") (kbd "M-9")))
 
 
 (use-package ryo-modal
@@ -260,6 +284,18 @@
 
 ;; ------------------------------------------------------------
 
+(use-package dired
+  :ensure nil    ;; built-in package
+  :hook (dired-mode . init/bind-comma-keys))
+
+;; ------------------------------------------------------------
+
+(use-package help-mode
+  :ensure nil    ;; built-in package
+  :hook (help-mode . init/bind-comma-keys))
+
+;; ------------------------------------------------------------
+
 (use-package color-theme-sanityinc-tomorrow
   :config (load-theme 'sanityinc-tomorrow-night))
 
@@ -400,7 +436,19 @@
 (use-package vterm
   :defer t
   :config
-  (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1))))
+  (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1)))
+
+  (defvar init/vterm-copy-local-map (make-sparse-keymap))
+  (add-hook 'vterm-copy-mode-hook
+            #'(lambda ()
+                (when vterm-copy-mode
+                  (when (not (current-local-map))
+                    (use-local-map init/vterm-copy-local-map))
+                  (init/bind-comma-keys)
+                  (define-key (current-local-map) (kbd ", c n") 'vterm-next-prompt)
+                  (define-key (current-local-map) (kbd ", c p") 'vterm-previous-prompt)
+                  (define-key (current-local-map) (kbd ", c r") 'vterm-reset-cursor-point)
+                  (define-key (current-local-map) (kbd ", c t") 'vterm-copy-mode)))))
 
 ;; ------------------------------------------------------------
 
