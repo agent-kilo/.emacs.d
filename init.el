@@ -103,6 +103,8 @@
     (define-key map (kbd "G") 'ido-switch-buffer-other-frame)
     (define-key map (kbd "C-S-G") 'ido-switch-buffer-other-frame)
 
+    (define-key map (kbd "C-c") 'delete-frame)
+
     map))
 
 (global-unset-key (kbd "C-t")) ;; Was transpose-chars; Use C-t for window management instead
