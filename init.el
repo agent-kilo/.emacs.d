@@ -93,16 +93,47 @@
     (define-key map (kbd "h") 'eshell)
     (define-key map (kbd "C-h") 'eshell)
 
+    (define-key map (kbd "f") 'ido-find-file-other-window)
+    (define-key map (kbd "C-f") 'ido-find-file-other-window)
+    (define-key map (kbd "F") 'ido-find-file-other-frame)
+    (define-key map (kbd "C-S-F") 'ido-find-file-other-frame)
+
+    (define-key map (kbd "g") 'ido-switch-buffer-other-window)
+    (define-key map (kbd "C-g") 'ido-switch-buffer-other-window)
+    (define-key map (kbd "G") 'ido-switch-buffer-other-frame)
+    (define-key map (kbd "C-S-G") 'ido-switch-buffer-other-frame)
+
     map))
 
 (global-unset-key (kbd "C-t")) ;; Was transpose-chars; Use C-t for window management instead
 (define-key (current-global-map) (kbd "C-t") init/win-key-map)
+
+(defvar init/buf-key-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "g") 'ido-switch-buffer)
+    (define-key map (kbd "t") 'ido-switch-buffer-other-window)
+    (define-key map (kbd "T") 'ido-switch-buffer-other-frame)
+    (define-key map (kbd "k") 'ido-kill-buffer)
+    map))
+
+(defvar init/file-key-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "f") 'ido-find-file)
+    (define-key map (kbd "t") 'ido-find-file-other-window)
+    (define-key map (kbd "T") 'ido-find-file-other-frame)
+    (define-key map (kbd "s") 'save-buffer)
+    (define-key map (kbd "r") 'revert-buffer)
+    (define-key map (kbd "d") 'ido-dired)
+    map))
+
 (define-key (current-global-map) (kbd "M-n") 'hippie-expand)
 
 (defun init/bind-comma-keys ()
   (define-key (current-local-map) (kbd ", h") 'help-command)
   (define-key (current-local-map) (kbd ", x") ctl-x-map)
   (define-key (current-local-map) (kbd ", t") init/win-key-map)
+  (define-key (current-local-map) (kbd ", g") init/buf-key-map)
+  (define-key (current-local-map) (kbd ", f") init/file-key-map)
 
   (define-key (current-local-map) (kbd "-") (kbd "M--"))
   (define-key (current-local-map) (kbd "0") (kbd "M-0"))
@@ -254,6 +285,8 @@
 
     (define-key ryo-modal-mode-map (kbd ", x") ctl-x-map)
     (define-key ryo-modal-mode-map (kbd ", t") init/win-key-map)
+    (define-key ryo-modal-mode-map (kbd ", g") init/buf-key-map)
+    (define-key ryo-modal-mode-map (kbd ", f") init/file-key-map)
 
     (ryo-modal-keys
      (:norepeat t)
