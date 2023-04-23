@@ -149,6 +149,11 @@
   (define-key (current-local-map) (kbd "8") (kbd "M-8"))
   (define-key (current-local-map) (kbd "9") (kbd "M-9")))
 
+(advice-add 'display-startup-screen
+            :after
+            #'(lambda (&rest args)
+                (with-current-buffer "*GNU Emacs*"
+                  (init/bind-comma-keys))))
 
 (use-package ryo-modal
   :bind ("C-z" . ryo-modal-mode)
