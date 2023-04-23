@@ -130,24 +130,27 @@
 
 (define-key (current-global-map) (kbd "M-n") 'hippie-expand)
 
-(defun init/bind-comma-keys ()
-  (define-key (current-local-map) (kbd ", h") 'help-command)
-  (define-key (current-local-map) (kbd ", x") ctl-x-map)
-  (define-key (current-local-map) (kbd ", t") init/win-key-map)
-  (define-key (current-local-map) (kbd ", g") init/buf-key-map)
-  (define-key (current-local-map) (kbd ", f") init/file-key-map)
+(defun init/bind-comma-keys (&optional keymap)
+  (let ((map (or keymap (current-local-map))))
+    (define-key map (kbd ", h") 'help-command)
+    (define-key map (kbd ", x") ctl-x-map)
+    (define-key map (kbd ", t") init/win-key-map)
+    (define-key map (kbd ", g") init/buf-key-map)
+    (define-key map (kbd ", f") init/file-key-map)
 
-  (define-key (current-local-map) (kbd "-") (kbd "M--"))
-  (define-key (current-local-map) (kbd "0") (kbd "M-0"))
-  (define-key (current-local-map) (kbd "1") (kbd "M-1"))
-  (define-key (current-local-map) (kbd "2") (kbd "M-2"))
-  (define-key (current-local-map) (kbd "3") (kbd "M-3"))
-  (define-key (current-local-map) (kbd "4") (kbd "M-4"))
-  (define-key (current-local-map) (kbd "5") (kbd "M-5"))
-  (define-key (current-local-map) (kbd "6") (kbd "M-6"))
-  (define-key (current-local-map) (kbd "7") (kbd "M-7"))
-  (define-key (current-local-map) (kbd "8") (kbd "M-8"))
-  (define-key (current-local-map) (kbd "9") (kbd "M-9")))
+    (define-key map (kbd "-") (kbd "M--"))
+    (define-key map (kbd "0") (kbd "M-0"))
+    (define-key map (kbd "1") (kbd "M-1"))
+    (define-key map (kbd "2") (kbd "M-2"))
+    (define-key map (kbd "3") (kbd "M-3"))
+    (define-key map (kbd "4") (kbd "M-4"))
+    (define-key map (kbd "5") (kbd "M-5"))
+    (define-key map (kbd "6") (kbd "M-6"))
+    (define-key map (kbd "7") (kbd "M-7"))
+    (define-key map (kbd "8") (kbd "M-8"))
+    (define-key map (kbd "9") (kbd "M-9"))
+    
+    map))
 
 (advice-add 'display-startup-screen
             :after
@@ -485,10 +488,11 @@
                   (when (not (current-local-map))
                     (use-local-map init/vterm-copy-local-map))
                   (init/bind-comma-keys)
-                  (define-key (current-local-map) (kbd ", c n") 'vterm-next-prompt)
-                  (define-key (current-local-map) (kbd ", c p") 'vterm-previous-prompt)
-                  (define-key (current-local-map) (kbd ", c r") 'vterm-reset-cursor-point)
-                  (define-key (current-local-map) (kbd ", c t") 'vterm-copy-mode)))))
+                  (let ((map (current-local-map)))
+                    (define-key map (kbd ", c n") 'vterm-next-prompt)
+                    (define-key map (kbd ", c p") 'vterm-previous-prompt)
+                    (define-key map (kbd ", c r") 'vterm-reset-cursor-point)
+                    (define-key map (kbd ", c t") 'vterm-copy-mode))))))
 
 ;; ------------------------------------------------------------
 
