@@ -26,6 +26,8 @@
 (defvar init/default-font "TamzenForPowerline-11:antialias=none")
 (add-to-list 'default-frame-alist `(font . ,init/default-font))
 
+(setq-default cursor-type 'bar)
+
 ;; ------------------------------------------------------------
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
@@ -48,6 +50,15 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 ;(setq use-package-compute-statistics t)
+
+;; ------------------------------------------------------------
+
+(use-package color-theme-sanityinc-tomorrow
+  :config
+  (load-theme 'sanityinc-tomorrow-night)
+  (let* ((tomorrow-night-colors (alist-get 'night color-theme-sanityinc-tomorrow-colors))
+         (color-red (alist-get 'red tomorrow-night-colors)))
+    (set-face-attribute 'cursor nil :background color-red)))
 
 ;; ------------------------------------------------------------
 
@@ -162,6 +173,8 @@
   :bind ("C-z" . ryo-modal-mode)
   :hook (after-init . init/ryo-modal-setup)
   :defer t
+  ;; load after the theme, so that ryo-modal knows about the default cursor color
+  :after (:all color-theme-sanityinc-tomorrow)
   :config
 
   (add-hook 'text-mode-hook #'(lambda () (ryo-modal-mode 1)))
@@ -336,11 +349,6 @@
 (use-package help-mode
   :ensure nil    ;; built-in package
   :hook (help-mode . init/bind-comma-keys))
-
-;; ------------------------------------------------------------
-
-(use-package color-theme-sanityinc-tomorrow
-  :config (load-theme 'sanityinc-tomorrow-night))
 
 ;; ------------------------------------------------------------
 
