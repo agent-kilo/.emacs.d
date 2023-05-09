@@ -234,6 +234,35 @@
         (goto-line line)
       (beginning-of-buffer)))
 
+  ;; to be wrapped by mc--cache-input-function, so that read-string stay untouched
+  (defun init/mc-read-string (&rest args)
+    (apply #'read-string args))
+
+  (defun init/wrap-with (start end str)
+    (interactive
+     (let ((input-str (init/mc-read-string "Wrap with: ")))
+       (list (region-beginning) (region-end) input-str)))
+    (when (use-region-p)
+      (let* ((str-len (length str))
+             (mid-idx (/ str-len 2))
+             (left-end (if (<= mid-idx 0) str-len mid-idx))
+             (right-start mid-idx)
+             (left (substring str 0 left-end))
+             (right (substring str right-start str-len)))
+        ;(message (format "start: %d, end: %d, str: %s, left: %s, right: %s" start end str left right))
+        (save-mark-and-excursion
+          (goto-char end)
+          (insert right)
+          (goto-char start)
+          (insert left)))))
+
+  (defun init/unwrap (start end count)
+    (interactive "r\np")
+    (when (and (use-region-p) (>= (- end start) (* count 2)))
+      (save-mark-and-excursion
+        (delete-region (- end count) end)
+        (delete-region start (+ start count)))))
+
   ;; ------------------------------------------------------------
 
   (defun init/ryo-modal-setup ()
@@ -290,6 +319,9 @@
      (";" init/deactivate-mark)
      ("M-;" exchange-point-and-mark)
      ("x" init/select-lines)
+
+     ("'" init/wrap-with)
+     ("\"" init/unwrap)
 
      ("y" init/kill-ring-save-selection)
      ("d" init/kill-selection)
@@ -397,7 +429,16 @@
        ("a" mc/mark-all-like-this)
        ("s" mc/mark-all-in-region)
        ("r" mc/mark-all-in-region-regexp)
-       ("m" init/mc-mode)))))))
+       ("m" init/mc-mode))))))
+
+  :config
+  (defun init/cache-mc-read-string ()
+    ;; only available after multiple-cursors is loaded
+    (mc--cache-input-function init/mc-read-string))
+
+  :hook
+  ; won't work in :config, don't know why
+  (after-init . init/cache-mc-read-string))
 
 ;; ------------------------------------------------------------
 
