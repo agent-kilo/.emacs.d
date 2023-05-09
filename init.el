@@ -240,7 +240,7 @@
 
   (defun init/wrap-with (start end str)
     (interactive
-     (let ((input-str (init/mc-read-string "Wrap with: ")))
+     (let ((input-str (init/mc-read-string "Wrap with: " nil nil nil t)))
        (list (region-beginning) (region-end) input-str)))
     (when (use-region-p)
       (let* ((str-len (length str))
