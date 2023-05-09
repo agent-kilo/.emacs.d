@@ -186,7 +186,7 @@
 
   (defun init/ensure-mark-active ()
     (interactive)
-    (unless (use-region-p) (set-mark (point))))
+    (unless (use-region-p) (push-mark (point) nil t)))
 
   (defun init/open-lines-below (count)
     (interactive "p")
@@ -204,7 +204,7 @@
   (defun init/select-lines (count)
     (interactive "p")
     (beginning-of-line)
-    (unless (use-region-p) (set-mark (point)))
+    (unless (use-region-p) (push-mark (point) nil t))
     (forward-line count))
 
   (defun init/kill-selection (count)
@@ -212,7 +212,7 @@
     (if (use-region-p)
         (kill-region (region-beginning) (region-end))
       (progn
-        (set-mark (point))
+        (push-mark (point) nil t)
         (forward-char count)
         (kill-region (region-beginning) (region-end))
         (deactivate-mark))))
@@ -222,7 +222,7 @@
     (if (use-region-p)
         (kill-ring-save (region-beginning) (region-end))
       (progn
-        (set-mark (point))
+        (push-mark (point) nil t)
         (forward-char count)
         (kill-ring-save (region-beginning) (region-end))
         (exchange-point-and-mark)
@@ -248,13 +248,27 @@
              (left-end (if (<= mid-idx 0) str-len mid-idx))
              (right-start mid-idx)
              (left (substring str 0 left-end))
-             (right (substring str right-start str-len)))
-        ;(message (format "start: %d, end: %d, str: %s, left: %s, right: %s" start end str left right))
+             (right (substring str right-start str-len))
+             (new-end end)
+             (old-point (point)))
         (save-mark-and-excursion
           (goto-char end)
-          (insert right)
+          ;; mark the end
+          (set-mark (point))
+          ;; also moves mark (the end) to the right
+          (insert-before-markers-and-inherit right)
           (goto-char start)
-          (insert left)))))
+          ;; also moves point & mark (the end) to the right
+          (insert-before-markers-and-inherit left)
+          ;; save the new end, to be used to delimit the new region after all this mangling
+          (setq new-end (mark))
+          ;; the old point was shifted the same amount as the start
+          (setq old-point (+ old-point (- (point) start))))
+        ;; to make exchange-point-and-mark work properly and move point to nearest location
+        (push-mark new-end nil nil)
+        (goto-char start)
+        (if (< (abs (- old-point new-end)) (abs (- old-point start)))
+            (exchange-point-and-mark)))))
 
   (defun init/unwrap (start end count)
     (interactive "r\np")
