@@ -280,6 +280,10 @@
   ;; ------------------------------------------------------------
 
   (defun init/ryo-modal-setup ()
+    (let* ((tomorrow-night-colors (alist-get 'night color-theme-sanityinc-tomorrow-colors))
+           (color-red (alist-get 'red tomorrow-night-colors)))
+      (setq ryo-modal-cursor-color color-red))
+
     (ryo-modal-keys
      ("z" ryo-modal-mode)
 
