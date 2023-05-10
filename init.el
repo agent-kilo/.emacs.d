@@ -56,9 +56,12 @@
 (use-package color-theme-sanityinc-tomorrow
   :config
   (load-theme 'sanityinc-tomorrow-night)
-  (let* ((tomorrow-night-colors (alist-get 'night color-theme-sanityinc-tomorrow-colors))
-         (color-red (alist-get 'red tomorrow-night-colors)))
-    (set-face-attribute 'cursor nil :background color-red)))
+
+  (defun init/get-theme-color (name)
+    (let ((theme-colors (alist-get 'night color-theme-sanityinc-tomorrow-colors)))
+      (alist-get name theme-colors)))
+
+  (set-face-attribute 'cursor nil :background (init/get-theme-color 'red)))
 
 ;; ------------------------------------------------------------
 
@@ -280,9 +283,7 @@
   ;; ------------------------------------------------------------
 
   (defun init/ryo-modal-setup ()
-    (let* ((tomorrow-night-colors (alist-get 'night color-theme-sanityinc-tomorrow-colors))
-           (color-red (alist-get 'red tomorrow-night-colors)))
-      (setq ryo-modal-cursor-color color-red))
+    (setq ryo-modal-cursor-color (init/get-theme-color 'red))
 
     (ryo-modal-keys
      ("z" ryo-modal-mode)
@@ -497,7 +498,8 @@
   (autoload 'citre-peek-restore "citre" "Should have been autoloaded by citre...." t nil)
   (ryo-modal-keys
    ("g"
-    (("p" citre-ace-peek)
+    (("p" citre-peek)
+     ("P" citre-ace-peek)
      ("r" citre-peek-restore))))
 
   :config
@@ -523,11 +525,11 @@
   ;; display-line-numbers-mode tears the border apart when running without this
   (setq citre-peek-fill-fringe nil)
 
-  (let* ((tomorrow-night-colors (alist-get 'night color-theme-sanityinc-tomorrow-colors))
-         (color-blue (alist-get 'blue tomorrow-night-colors))
-         (color-bg (alist-get 'background tomorrow-night-colors)))
-    (set-face-attribute 'citre-peek-border-face nil :background color-blue)
-    (set-face-attribute 'citre-peek-ace-str-face nil :foreground color-bg :background color-blue)))
+  (set-face-attribute 'citre-peek-border-face nil
+                      :background (init/get-theme-color 'blue))
+  (set-face-attribute 'citre-peek-ace-str-face nil
+                      :foreground (init/get-theme-color 'background)
+                      :background (init/get-theme-color 'blue)))
 
 ;; ------------------------------------------------------------
 
