@@ -434,7 +434,7 @@
     map))
 
 ;; caused "Waning: 'make-variable-buffer-local' not called at toplevel" while
-;; put inside a use-package call
+;; compiling if put inside a use-package call
 (define-minor-mode init/mc-mode
   nil
   :init-value nil
