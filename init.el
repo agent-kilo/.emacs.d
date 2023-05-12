@@ -422,27 +422,29 @@
 
 ;; ------------------------------------------------------------
 
+(defvar init/mc-key-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "n") 'mc/mark-next-like-this)
+    (define-key map (kbd "E") 'mc/unmark-next-like-this)
+    (define-key map (kbd "M-n") 'mc/skip-to-next-like-this)
+    (define-key map (kbd "e") 'mc/mark-previous-like-this)
+    (define-key map (kbd "N") 'mc/unmark-previous-like-this)
+    (define-key map (kbd "M-e") 'mc/skip-to-previous-like-this)
+    (define-key map (kbd "m") 'init/mc-mode)
+    map))
+
+;; caused "Waning: 'make-variable-buffer-local' not called at toplevel" while
+;; put inside a use-package call
+(define-minor-mode init/mc-mode
+  nil
+  :init-value nil
+  :lighter " mc"
+  :keymap init/mc-key-map)
+
 (use-package multiple-cursors
   :defer t
   :after (:all ryo-modal)
   :init
-  (defvar init/mc-key-map
-    (let ((map (make-sparse-keymap)))
-      (define-key map (kbd "n") 'mc/mark-next-like-this)
-      (define-key map (kbd "E") 'mc/unmark-next-like-this)
-      (define-key map (kbd "M-n") 'mc/skip-to-next-like-this)
-      (define-key map (kbd "e") 'mc/mark-previous-like-this)
-      (define-key map (kbd "N") 'mc/unmark-previous-like-this)
-      (define-key map (kbd "M-e") 'mc/skip-to-previous-like-this)
-      (define-key map (kbd "m") 'init/mc-mode)
-      map))
-
-  (define-minor-mode init/mc-mode
-    nil
-    :init-value nil
-    :lighter " mc"
-    :keymap init/mc-key-map)
-
   (ryo-modal-keys
    (","
     (("c"
