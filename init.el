@@ -169,6 +169,7 @@
 (advice-add 'display-startup-screen
             :after
             #'(lambda (&rest args)
+                (ignore args)
                 (with-current-buffer "*GNU Emacs*"
                   (init/bind-comma-keys))))
 
@@ -233,9 +234,10 @@
 
   (defun init/goto-line (&optional line)
     (interactive "p")
-    (if line
-        (goto-line line)
-      (beginning-of-buffer)))
+    (push-mark (point))
+    (goto-char (point-min))
+    (when line
+      (forward-line (- line 1))))
 
   ;; to be wrapped by mc--cache-input-function, so that read-string stay untouched
   (defun init/mc-read-string (&rest args)
@@ -553,7 +555,7 @@
   (defvar init/vterm-copy-local-map (make-sparse-keymap))
   (add-hook 'vterm-copy-mode-hook
             #'(lambda ()
-                (when vterm-copy-mode
+                (when (and (boundp 'vterm-copy-mode) vterm-copy-mode)
                   (when (not (current-local-map))
                     (use-local-map init/vterm-copy-local-map))
                   (init/bind-comma-keys)
