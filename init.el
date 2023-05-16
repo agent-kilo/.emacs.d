@@ -26,8 +26,6 @@
 (defvar init/default-font "TamzenForPowerline-11:antialias=none")
 (add-to-list 'default-frame-alist `(font . ,init/default-font))
 
-(setq-default cursor-type 'bar)
-
 ;; ------------------------------------------------------------
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
@@ -121,9 +119,6 @@
 
     map))
 
-(global-unset-key (kbd "C-t")) ;; Was transpose-chars; Use C-t for window management instead
-(define-key (current-global-map) (kbd "C-t") init/win-key-map)
-
 (defvar init/buf-key-map
   (let ((map (make-sparse-keymap)))
     (define-key map (kbd "g") 'ido-switch-buffer)
@@ -141,8 +136,6 @@
     (define-key map (kbd "r") 'revert-buffer)
     (define-key map (kbd "d") 'ido-dired)
     map))
-
-(define-key (current-global-map) (kbd "M-n") 'hippie-expand)
 
 (defun init/bind-comma-keys (&optional keymap)
   (let ((map (or keymap (current-local-map))))
@@ -173,210 +166,268 @@
                 (with-current-buffer "*GNU Emacs*"
                   (init/bind-comma-keys))))
 
-(use-package ryo-modal
-  :bind ("C-z" . ryo-modal-mode)
-  :hook (after-init . init/ryo-modal-setup)
-  :defer t
-  ;; load after the theme, so that ryo-modal knows about the default cursor color
-  :after (:all color-theme-sanityinc-tomorrow)
-  :config
+(defun init/deactivate-mark ()
+  (interactive)
+  (deactivate-mark))
 
-  (add-hook 'text-mode-hook #'(lambda () (ryo-modal-mode 1)))
-  (add-hook 'prog-mode-hook #'(lambda () (ryo-modal-mode 1)))
+(defun init/ensure-mark-active ()
+  (interactive)
+  (unless (use-region-p) (push-mark (point) nil t)))
 
-  (defun init/deactivate-mark ()
-    (interactive)
-    (deactivate-mark))
+(defun init/open-lines-below (count)
+  (interactive "p")
+  (end-of-line)
+  (dotimes (_ count)
+    (electric-newline-and-maybe-indent)))
 
-  (defun init/ensure-mark-active ()
-    (interactive)
-    (unless (use-region-p) (push-mark (point) nil t)))
+(defun init/open-lines-above (count)
+  (interactive "p")
+  (beginning-of-line)
+  (dotimes (_ count)
+    (newline)
+    (forward-line -1)))
 
-  (defun init/open-lines-below (count)
-    (interactive "p")
-    (end-of-line)
-    (dotimes (_ count)
-      (electric-newline-and-maybe-indent)))
+(defun init/select-lines (count)
+  (interactive "p")
+  (beginning-of-line)
+  (unless (use-region-p) (push-mark (point) nil t))
+  (forward-line count))
 
-  (defun init/open-lines-above (count)
-    (interactive "p")
-    (beginning-of-line)
-    (dotimes (_ count)
-      (newline)
-      (forward-line -1)))
+(defun init/kill-selection (count)
+  (interactive "p")
+  (if (use-region-p)
+      (kill-region (region-beginning) (region-end))
+    (progn
+      (push-mark (point) nil t)
+      (forward-char count)
+      (kill-region (region-beginning) (region-end))
+      (deactivate-mark))))
 
-  (defun init/select-lines (count)
-    (interactive "p")
-    (beginning-of-line)
-    (unless (use-region-p) (push-mark (point) nil t))
-    (forward-line count))
+(defun init/kill-ring-save-selection (count)
+  (interactive "p")
+  (if (use-region-p)
+      (kill-ring-save (region-beginning) (region-end))
+    (progn
+      (push-mark (point) nil t)
+      (forward-char count)
+      (kill-ring-save (region-beginning) (region-end))
+      (exchange-point-and-mark)
+      (deactivate-mark))))
 
-  (defun init/kill-selection (count)
-    (interactive "p")
-    (if (use-region-p)
-        (kill-region (region-beginning) (region-end))
-      (progn
-        (push-mark (point) nil t)
-        (forward-char count)
-        (kill-region (region-beginning) (region-end))
-        (deactivate-mark))))
+(defun init/goto-line (&optional line)
+  (interactive "p")
+  (push-mark (point))
+  (goto-char (point-min))
+  (when line
+    (forward-line (- line 1))))
 
-  (defun init/kill-ring-save-selection (count)
-    (interactive "p")
-    (if (use-region-p)
-        (kill-ring-save (region-beginning) (region-end))
-      (progn
-        (push-mark (point) nil t)
-        (forward-char count)
-        (kill-ring-save (region-beginning) (region-end))
-        (exchange-point-and-mark)
-        (deactivate-mark))))
+;; to be wrapped by mc--cache-input-function, so that read-string stay untouched
+(defun init/mc-read-string (&rest args)
+  (apply #'read-string args))
 
-  (defun init/goto-line (&optional line)
-    (interactive "p")
-    (push-mark (point))
-    (goto-char (point-min))
-    (when line
-      (forward-line (- line 1))))
-
-  ;; to be wrapped by mc--cache-input-function, so that read-string stay untouched
-  (defun init/mc-read-string (&rest args)
-    (apply #'read-string args))
-
-  (defun init/wrap-with (start end str)
-    (interactive
-     (let ((input-str (init/mc-read-string "Wrap with: " nil nil nil t)))
-       (list (region-beginning) (region-end) input-str)))
-    (when (use-region-p)
-      (let* ((str-len (length str))
-             (mid-idx (/ str-len 2))
-             (left-end (if (<= mid-idx 0) str-len mid-idx))
-             (right-start mid-idx)
-             (left (substring str 0 left-end))
-             (right (substring str right-start str-len))
-             (new-end end)
-             (old-point (point)))
-        (save-mark-and-excursion
-          (goto-char end)
-          ;; mark the end
-          (set-mark (point))
-          ;; also moves mark (the end) to the right
-          (insert-before-markers-and-inherit right)
-          (goto-char start)
-          ;; also moves point & mark (the end) to the right
-          (insert-before-markers-and-inherit left)
-          ;; save the new end, to be used to delimit the new region after all this mangling
-          (setq new-end (mark))
-          ;; the old point was shifted the same amount as the start
-          (setq old-point (+ old-point (- (point) start))))
-        ;; to make exchange-point-and-mark work properly and move point to nearest location
-        (push-mark new-end nil nil)
-        (goto-char start)
-        (if (< (abs (- old-point new-end)) (abs (- old-point start)))
-            (exchange-point-and-mark)))))
-
-  (defun init/unwrap (start end count)
-    (interactive "r\np")
-    (when (and (use-region-p) (>= (- end start) (* count 2)))
+(defun init/wrap-with (start end str)
+  (interactive
+   (let ((input-str (init/mc-read-string "Wrap with: " nil nil nil t)))
+     (list (region-beginning) (region-end) input-str)))
+  (when (use-region-p)
+    (let* ((str-len (length str))
+           (mid-idx (/ str-len 2))
+           (left-end (if (<= mid-idx 0) str-len mid-idx))
+           (right-start mid-idx)
+           (left (substring str 0 left-end))
+           (right (substring str right-start str-len))
+           (new-end end)
+           (old-point (point)))
       (save-mark-and-excursion
-        (delete-region (- end count) end)
-        (delete-region start (+ start count)))))
+        (goto-char end)
+        ;; mark the end
+        (set-mark (point))
+        ;; also moves mark (the end) to the right
+        (insert-before-markers-and-inherit right)
+        (goto-char start)
+        ;; also moves point & mark (the end) to the right
+        (insert-before-markers-and-inherit left)
+        ;; save the new end, to be used to delimit the new region after all this mangling
+        (setq new-end (mark))
+        ;; the old point was shifted the same amount as the start
+        (setq old-point (+ old-point (- (point) start))))
+      ;; to make exchange-point-and-mark work properly and move point to nearest location
+      (push-mark new-end nil nil)
+      (goto-char start)
+      (if (< (abs (- old-point new-end)) (abs (- old-point start)))
+          (exchange-point-and-mark)))))
 
-  ;; ------------------------------------------------------------
+(defun init/unwrap (start end count)
+  (interactive "r\np")
+  (when (and (use-region-p) (>= (- end start) (* count 2)))
+    (save-mark-and-excursion
+      (delete-region (- end count) end)
+      (delete-region start (+ start count)))))
 
-  (defun init/ryo-modal-setup ()
-    (setq ryo-modal-cursor-color (init/get-theme-color 'red))
+;; ------------------------------------------------------------
 
-    (ryo-modal-keys
-     ("z" ryo-modal-mode)
+(use-package multistate
+  :init
+  (multistate-define-state
+   'emacs
+   :lighter "E"
+   :cursor 'bar)
 
-     (","
-      (("h" help-command)))
+  (multistate-define-state
+   'cmd
+   :default t
+   :lighter "C"
+   :cursor 'box
+   :parent 'multistate-emacs-state-map)
 
-     (":" execute-extended-command)
+  ;; remove "reference to free variable" warnings
+  (defvar multistate-emacs-state-map)
+  (defvar multistate-cmd-state-map)
 
-     ("." ryo-modal-repeat)
+  (let ((map multistate-emacs-state-map))
+    (define-key map (kbd "C-t") init/win-key-map))
 
-     ("m" backward-char)
-     ("i" forward-char)
-     ("n" next-line)
-     ("e" previous-line)
+  (let ((map multistate-cmd-state-map))
+    (define-key map (kbd ", x") ctl-x-map)
+    (define-key map (kbd ", t") init/win-key-map)
+    (define-key map (kbd ", g") init/buf-key-map)
+    (define-key map (kbd ", f") init/file-key-map))
 
-     ("M" beginning-of-line :first '(init/ensure-mark-active))
-     ("I" end-of-line :first '(init/ensure-mark-active))
-     ("N" next-line :first '(init/ensure-mark-active))
-     ("E" previous-line :first '(init/ensure-mark-active))
+  (setq multistate-lighter-format "%s")
 
-     ("w" forward-word)
-     ("b" backward-word)
+  (multistate-global-mode 1)
 
-     ("W" forward-word :first '(init/ensure-mark-active))
-     ("B" backward-word :first '(init/ensure-mark-active))
+  :bind
+  (:map
+   multistate-emacs-state-map
+   ("C-z" . multistate-cmd-state)
+   ("M-n" . hippie-expand)
 
-     ("s" forward-sexp)
-     ("r" backward-sexp)
+   :map multistate-cmd-state-map
+   ("C-z" . multistate-emacs-state)
+   ("z" . multistate-emacs-state)
 
-     ("S" forward-sexp :first '(init/ensure-mark-active))
-     ("R" backward-sexp :first '(init/ensure-mark-active))
+   (", h" . help-command)
 
-     ("g"
-      (("m" back-to-indentation)
-       ("M" move-beginning-of-line)
-       ("i" move-end-of-line)
-       ("n" forward-paragraph)
-       ("e" backward-paragraph)
+   (":" . execute-extended-command)
 
-       ("w" forward-sentence)
-       ("b" backward-sentence)
+   ("." . todo-repeat)
 
-       ("u" backward-up-list)
-       ("U" up-list)
-       ("d" down-list)
+   ("m" . backward-char)
+   ("i" . forward-char)
+   ("n" . next-line)
+   ("e" . previous-line)
 
-       ("g" init/goto-line)
-       ("G" end-of-buffer)))
-     ("G" end-of-buffer)
+   ("M" . (lambda ()
+            (interactive)
+            (init/ensure-mark-active)
+            (call-interactively 'beginning-of-line)))
+   ("I" . (lambda ()
+            (interactive)
+            (init/ensure-mark-active)
+            (call-interactively 'end-of-line)))
+   ("N" . (lambda ()
+            (interactive)
+            (init/ensure-mark-active)
+            (call-interactively 'next-line)))
+   ("E" . (lambda ()
+            (interactive)
+            (init/ensure-mark-active)
+            (call-interactively 'previous-line)))
 
-     (";" init/deactivate-mark)
-     ("M-;" exchange-point-and-mark)
-     ("x" init/select-lines)
+   ("w" . forward-word)
+   ("b" . backward-word)
 
-     ("'" init/wrap-with)
-     ("\"" init/unwrap)
+   ("W" . (lambda ()
+            (interactive)
+            (init/ensure-mark-active)
+            (call-interactively 'forward-word)))
+   ("B" . (lambda ()
+            (interactive)
+            (init/ensure-mark-active)
+            (call-interactively 'backward-word)))
 
-     ("y" init/kill-ring-save-selection)
-     ("d" init/kill-selection)
-     ("p" yank)
-     ("u" undo)
+   ("s" . forward-sexp)
+   ("r" . backward-sexp)
 
-     ("Q" kmacro-start-macro-or-insert-counter)
-     ("q" kmacro-end-or-call-macro)
+   ("S" . (lambda ()
+            (interactive)
+            (init/ensure-mark-active)
+            (call-interactively 'forward-sexp)))
+   ("R" . (lambda ()
+            (interactive)
+            (init/ensure-mark-active)
+            (call-interactively 'backward-sexp)))
 
-     ("a" forward-char :exit t)
-     ("A" move-end-of-line :exit t)
-     ("Z" back-to-indentation :exit t)
-     ("o" init/open-lines-below :exit t)
-     ("O" init/open-lines-above :exit t)
-     ("c" init/kill-selection :exit t))
+   ("g m" . back-to-indentation)
+   ("g M" . move-beginning-of-line)
+   ("g i" . move-end-of-line)
+   ("g n" . forward-paragraph)
+   ("g e" . backward-paragraph)
 
-    (define-key ryo-modal-mode-map (kbd ", x") ctl-x-map)
-    (define-key ryo-modal-mode-map (kbd ", t") init/win-key-map)
-    (define-key ryo-modal-mode-map (kbd ", g") init/buf-key-map)
-    (define-key ryo-modal-mode-map (kbd ", f") init/file-key-map)
+   ("g w" . forward-sentence)
+   ("g b" . backward-sentence)
 
-    (ryo-modal-keys
-     (:norepeat t)
-     ("-" "M--")
-     ("0" "M-0")
-     ("1" "M-1")
-     ("2" "M-2")
-     ("3" "M-3")
-     ("4" "M-4")
-     ("5" "M-5")
-     ("6" "M-6")
-     ("7" "M-7")
-     ("8" "M-8")
-     ("9" "M-9"))))
+   ("g u" . backward-up-list)
+   ("g U" . up-list)
+   ("g d" . down-list)
+
+   ("g g" . init/goto-line)
+   ("g G" . end-of-buffer)
+
+   ("G" . end-of-buffer)
+
+   (";" . init/deactivate-mark)
+   ("M-;" . exchange-point-and-mark)
+   ("x" . init/select-lines)
+
+   ("'" . init/wrap-with)
+   ("\"" . init/unwrap)
+
+   ("y" . init/kill-ring-save-selection)
+   ("d" . init/kill-selection)
+   ("p" . yank)
+   ("u" . undo)
+
+   ("Q" . kmacro-start-macro-or-insert-counter)
+   ("q" . kmacro-end-or-call-macro)
+
+   ("a" . (lambda ()
+            (interactive)
+            (call-interactively 'forward-char)
+            (multistate-emacs-state)))
+   ("A" . (lambda ()
+            (interactive)
+            (call-interactively 'move-end-of-line)
+            (multistate-emacs-state)))
+   ("Z" . (lambda ()
+            (interactive)
+            (back-to-indentation)
+            (multistate-emacs-state)))
+   ("o" . (lambda ()
+            (interactive)
+            (call-interactively 'init/open-lines-below)
+            (multistate-emacs-state)))
+   ("O" . (lambda ()
+            (interactive)
+            (call-interactively 'init/open-lines-above)
+            (multistate-emacs-state)))
+   ("c" . (lambda ()
+            (interactive)
+            (call-interactively 'init/kill-selection)
+            (multistate-emacs-state)))
+
+   ("-" . "\M--")
+   ("0" . "\M-0")
+   ("1" . "\M-1")
+   ("2" . "\M-2")
+   ("3" . "\M-3")
+   ("4" . "\M-4")
+   ("5" . "\M-5")
+   ("6" . "\M-6")
+   ("7" . "\M-7")
+   ("8" . "\M-8")
+   ("9" . "\M-9")))
 
 ;; ------------------------------------------------------------
 
@@ -406,7 +457,6 @@
 ;; ------------------------------------------------------------
 
 (use-package which-key
-  :defer t
   :config
   (which-key-mode))
 
@@ -414,11 +464,12 @@
 
 (use-package expand-region
   :defer t
-  :after (:all ryo-modal)
-  :init
-  (ryo-modal-keys
-   ("v" er/expand-region)
-   ("V" set-mark-command)))
+  :after (:all multistate)
+  :bind
+  (:map
+   multistate-cmd-state-map
+   ("v" . er/expand-region)
+   ("V" . set-mark-command)))
 
 ;; ------------------------------------------------------------
 
@@ -435,6 +486,7 @@
 
 ;; caused "Waning: 'make-variable-buffer-local' not called at toplevel" while
 ;; compiling if put inside a use-package call
+;; TODO: use multistate instead
 (define-minor-mode init/mc-mode
   nil
   :init-value nil
@@ -443,16 +495,15 @@
 
 (use-package multiple-cursors
   :defer t
-  :after (:all ryo-modal)
-  :init
-  (ryo-modal-keys
-   (","
-    (("c"
-      (("l" mc/edit-lines)
-       ("a" mc/mark-all-like-this)
-       ("s" mc/mark-all-in-region)
-       ("r" mc/mark-all-in-region-regexp)
-       ("m" init/mc-mode))))))
+  :after (:all multistate)
+  :bind
+  (:map
+   multistate-cmd-state-map
+   (", c l" . mc/edit-lines)
+   (", c a" . mc/mark-all-like-this)
+   (", c s" . mc/mark-all-in-region)
+   (", c r" . mc/mark-all-in-region-regexp)
+   (", c m" . init/mc-mode))
 
   :config
   (defun init/cache-mc-read-string ()
@@ -467,14 +518,17 @@
 
 (use-package phi-search
   :defer t
-  :after (:all ryo-modal)
-  :init
-  (define-key (current-global-map) (kbd "C-s") 'phi-search)
-  (define-key (current-global-map) (kbd "C-r") 'phi-search-backward)
+  :after (:all multistate)
+  :bind
+  (:map
+   multistate-emacs-state-map
+   ("C-s" . phi-search)
+   ("C-r" . phi-search-backward)
 
-  (ryo-modal-keys
-   ("f" phi-search)
-   ("M-f" phi-search-backward)))
+   :map
+   multistate-cmd-state-map
+   ("f" . phi-search)
+   ("M-f" . phi-search-backward)))
 
 ;; ------------------------------------------------------------
 
@@ -486,44 +540,47 @@
 
 (use-package imenu-anywhere
   :defer t
-  :after (:all ryo-modal ido)
-  :init
-  (ryo-modal-keys
-   ("g"
-    (("t" ido-imenu-anywhere)))))
+  :after (:all multistate ido)
+  :bind
+  (:map
+   multistate-cmd-state-map
+   ("g t" . ido-imenu-anywhere)))
 
 ;; ------------------------------------------------------------
 
 (use-package citre
   :defer t
-  :after (:all ryo-modal color-theme-sanityinc-tomorrow)
+  :after (:all multistate color-theme-sanityinc-tomorrow)
   :init
   (require 'citre-config)
   (autoload 'citre-peek-restore "citre" "Should have been autoloaded by citre...." t nil)
-  (ryo-modal-keys
-   ("g"
-    (("p" citre-peek)
-     ("P" citre-ace-peek)
-     ("r" citre-peek-restore))))
+
+  :bind
+  (:map
+   multistate-cmd-state-map
+   ("g p" . citre-peek)
+   ("g P" . citre-ace-peek)
+   ("g r" . citre-peek-restore)
+
+   ;; TODO: use multistate
+   :map
+   citre-peek-keymap
+   ("n" . citre-peek-next-line)
+   ("e" . citre-peek-prev-line)
+   ("N" . citre-peek-next-tag)
+   ("E" . citre-peek-prev-tag)
+   ("i" . citre-peek-chain-forward)
+   ("m" . citre-peek-chain-backward)
+   ("I" . citre-peek-next-branch)
+   ("M" . citre-peek-prev-branch)
+   ("l p" . citre-peek-through)
+   ("l r" . citre-peek-through-reference)
+   ("l d" . citre-peek-delete-branch)
+   ("l D" . citre-peek-delete-branches)
+   ("l f" . citre-peek-make-current-tag-first)
+   ("l j" . citre-peek-jump))
 
   :config
-  (let ((map citre-peek-keymap))
-    (define-key map (kbd "n") 'citre-peek-next-line)
-    (define-key map (kbd "e") 'citre-peek-prev-line)
-    (define-key map (kbd "N") 'citre-peek-next-tag)
-    (define-key map (kbd "E") 'citre-peek-prev-tag)
-    (define-key map (kbd "i") 'citre-peek-chain-forward)
-    (define-key map (kbd "m") 'citre-peek-chain-backward)
-    (define-key map (kbd "I") 'citre-peek-next-branch)
-    (define-key map (kbd "M") 'citre-peek-prev-branch)
-
-    (define-key map (kbd "l p") 'citre-peek-through)
-    (define-key map (kbd "l r") 'citre-peek-through-reference)
-    (define-key map (kbd "l d") 'citre-peek-delete-branch)
-    (define-key map (kbd "l D") 'citre-peek-delete-branches)
-    (define-key map (kbd "l f") 'citre-peek-make-current-tag-first)
-    (define-key map (kbd "l j") 'citre-peek-jump))
-
   (setq citre-peek-file-content-height 22)
   (setq citre-peek-tag-list-height 3)
   ;; display-line-numbers-mode tears the border apart when running without this
@@ -549,6 +606,7 @@
 
 ;; ------------------------------------------------------------
 
+;; TODO: use multistate?
 (use-package vterm
   :defer t
   :config
@@ -588,8 +646,7 @@
   :ensure nil  ;; local package
   :defer t
   :init
-  (load-library "lilypond-init")
-  (add-hook 'LilyPond-mode-hook #'(lambda () (ryo-modal-mode 1))))
+  (load-library "lilypond-init"))
 
 ;; ------------------------------------------------------------
 
