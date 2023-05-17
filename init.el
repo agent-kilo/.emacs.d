@@ -227,8 +227,10 @@
 
 (defun init/wrap-with (start end str)
   (interactive
-   (let ((input-str (init/mc-read-string "Wrap with: " nil nil nil t)))
-     (list (region-beginning) (region-end) input-str)))
+   (if buffer-read-only
+       (user-error "Buffer is read-only: %S" (current-buffer))
+     (let ((input-str (init/mc-read-string "Wrap with: " nil nil nil t)))
+       (list (region-beginning) (region-end) input-str))))
   (when (use-region-p)
     (let* ((str-len (length str))
            (mid-idx (/ str-len 2))
@@ -258,7 +260,7 @@
           (exchange-point-and-mark)))))
 
 (defun init/unwrap (start end count)
-  (interactive "r\np")
+  (interactive "*r\np")
   (when (and (use-region-p) (>= (- end start) (* count 2)))
     (save-mark-and-excursion
       (delete-region (- end count) end)
@@ -393,27 +395,27 @@
    ("q" . kmacro-end-or-call-macro)
 
    ("a" . (lambda ()
-            (interactive)
+            (interactive "*")
             (call-interactively 'forward-char)
             (multistate-emacs-state)))
    ("A" . (lambda ()
-            (interactive)
+            (interactive "*")
             (call-interactively 'move-end-of-line)
             (multistate-emacs-state)))
    ("Z" . (lambda ()
-            (interactive)
+            (interactive "*")
             (back-to-indentation)
             (multistate-emacs-state)))
    ("o" . (lambda ()
-            (interactive)
+            (interactive "*")
             (call-interactively 'init/open-lines-below)
             (multistate-emacs-state)))
    ("O" . (lambda ()
-            (interactive)
+            (interactive "*")
             (call-interactively 'init/open-lines-above)
             (multistate-emacs-state)))
    ("c" . (lambda ()
-            (interactive)
+            (interactive "*")
             (call-interactively 'init/kill-selection)
             (multistate-emacs-state)))
 
@@ -655,6 +657,7 @@
    ("C-z" . vterm-copy-mode)
    ("C-c C-z" . vterm--self-insert)
    ("C-c C-t" . vterm--self-insert)
+   ("M-n" . vterm--self-insert)
    ("C-s" . vterm--self-insert)
    ("C-r" . vterm--self-insert)
 
