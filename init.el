@@ -311,7 +311,7 @@
 
    (":" . execute-extended-command)
 
-   ("." . todo-repeat)
+   ("." . repeat)
 
    ("m" . backward-char)
    ("i" . forward-char)
@@ -473,29 +473,19 @@
 
 ;; ------------------------------------------------------------
 
-(defvar init/mc-key-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map (kbd "n") 'mc/mark-next-like-this)
-    (define-key map (kbd "E") 'mc/unmark-next-like-this)
-    (define-key map (kbd "M-n") 'mc/skip-to-next-like-this)
-    (define-key map (kbd "e") 'mc/mark-previous-like-this)
-    (define-key map (kbd "N") 'mc/unmark-previous-like-this)
-    (define-key map (kbd "M-e") 'mc/skip-to-previous-like-this)
-    (define-key map (kbd "m") 'init/mc-mode)
-    map))
-
-;; caused "Waning: 'make-variable-buffer-local' not called at toplevel" while
-;; compiling if put inside a use-package call
-;; TODO: use multistate instead
-(define-minor-mode init/mc-mode
-  nil
-  :init-value nil
-  :lighter " mc"
-  :keymap init/mc-key-map)
-
 (use-package multiple-cursors
   :defer t
   :after (:all multistate)
+  :init
+  (multistate-define-state
+   'mc
+   :lighter "M"
+   :cursor 'box
+   :parent 'multistate-cmd-state-map)
+
+  ;; to remove "reference to free variable" warnings
+  (defvar multistate-mc-state-map)
+
   :bind
   (:map
    multistate-cmd-state-map
@@ -503,7 +493,17 @@
    (", c a" . mc/mark-all-like-this)
    (", c s" . mc/mark-all-in-region)
    (", c r" . mc/mark-all-in-region-regexp)
-   (", c m" . init/mc-mode))
+   (", c m" . multistate-mc-state)
+
+   :map
+   multistate-mc-state-map
+   ("n" . mc/mark-next-like-this)
+   ("E" . mc/unmark-next-like-this)
+   ("M-n" . mc/skip-to-next-like-this)
+   ("e" . mc/mark-previous-like-this)
+   ("N" . mc/unmark-previous-like-this)
+   ("M-e" . mc/skip-to-previous-like-this)
+   ("m" . multistate-cmd-state))
 
   :config
   (defun init/cache-mc-read-string ()
