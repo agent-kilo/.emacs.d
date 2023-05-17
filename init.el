@@ -629,24 +629,48 @@
 
 ;; ------------------------------------------------------------
 
-;; TODO: use multistate?
 (use-package vterm
   :defer t
-  :config
-  (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1)))
+  :after (:all multistate)
+  :init
+  (multistate-define-state
+   'vterm
+   :lighter "T"
+   :cursor 'bar
+   :parent 'multistate-emacs-state-map)
 
-  (defvar init/vterm-copy-local-map (make-sparse-keymap))
+  (multistate-define-state
+   'vterm-copy
+   :lighter "TC"
+   :cursor 'box
+   :parent 'multistate-cmd-state-map)
+
+  ;; remove "reference to free variable" warnings
+  (defvar multistate-vterm-state-map)
+  (defvar multistate-vterm-copy-state-map)
+
+  :bind
+  (:map
+   multistate-vterm-state-map
+   ("C-z" . vterm-copy-mode)
+   ("C-c C-z" . vterm--self-insert)
+
+   :map
+   multistate-vterm-copy-state-map
+   ("z" . vterm-copy-mode)
+   ("C-z" . vterm-copy-mode))
+
+  :config
+  (add-hook 'vterm-mode-hook
+            #'(lambda ()
+                (display-line-numbers-mode -1)
+                (multistate-vterm-state)))
+
   (add-hook 'vterm-copy-mode-hook
             #'(lambda ()
-                (when (and (boundp 'vterm-copy-mode) vterm-copy-mode)
-                  (when (not (current-local-map))
-                    (use-local-map init/vterm-copy-local-map))
-                  (init/bind-comma-keys)
-                  (let ((map (current-local-map)))
-                    (define-key map (kbd ", c n") 'vterm-next-prompt)
-                    (define-key map (kbd ", c p") 'vterm-previous-prompt)
-                    (define-key map (kbd ", c r") 'vterm-reset-cursor-point)
-                    (define-key map (kbd ", c t") 'vterm-copy-mode))))))
+                (if vterm-copy-mode
+                  (multistate-vterm-copy-state)
+                  (multistate-vterm-state)))))
 
 ;; ------------------------------------------------------------
 
