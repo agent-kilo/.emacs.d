@@ -555,16 +555,32 @@
   (require 'citre-config)
   (autoload 'citre-peek-restore "citre" "Should have been autoloaded by citre...." t nil)
 
+  (multistate-define-state
+   'citre-peek
+   :lighter "P"
+   :cursor 'box
+   :parent 'multistate-cmd-state-map)
+
+  ;; remove "reference to free variable" warnings
+  (defvar multistate-citre-peek-state-map)
+
   :bind
   (:map
    multistate-cmd-state-map
-   ("g p" . citre-peek)
-   ("g P" . citre-ace-peek)
-   ("g r" . citre-peek-restore)
+   ("g p" . (lambda ()
+              (interactive)
+              (call-interactively 'citre-peek)
+              ;; XXX: the states and modes may get out of sync, but
+              ;;      since citre don't have proper hooks, this is
+              ;;      the best we can do
+              (multistate-citre-peek-state)))
+   ("g r" . (lambda ()
+              (interactive)
+              (call-interactively 'citre-peek-restore)
+              (multistate-citre-peek-state)))
 
-   ;; TODO: use multistate
    :map
-   citre-peek-keymap
+   multistate-citre-peek-state-map
    ("n" . citre-peek-next-line)
    ("e" . citre-peek-prev-line)
    ("N" . citre-peek-next-tag)
@@ -578,7 +594,11 @@
    ("l d" . citre-peek-delete-branch)
    ("l D" . citre-peek-delete-branches)
    ("l f" . citre-peek-make-current-tag-first)
-   ("l j" . citre-peek-jump))
+   ("l j" . citre-peek-jump)
+   ("q" . (lambda ()
+            (interactive)
+            (call-interactively 'citre-peek-abort)
+            (multistate-cmd-state))))
 
   :config
   (setq citre-peek-file-content-height 22)
@@ -590,7 +610,10 @@
                       :background (init/get-theme-color 'blue))
   (set-face-attribute 'citre-peek-ace-str-face nil
                       :foreground (init/get-theme-color 'background)
-                      :background (init/get-theme-color 'blue)))
+                      :background (init/get-theme-color 'blue))
+
+  (add-hook 'citre-after-jump-hook
+            #'(lambda () (multistate-citre-peek-state))))
 
 ;; ------------------------------------------------------------
 
