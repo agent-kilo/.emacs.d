@@ -446,18 +446,6 @@
 
 ;; ------------------------------------------------------------
 
-(use-package dired
-  :ensure nil    ;; built-in package
-  :hook (dired-mode . init/bind-comma-keys))
-
-;; ------------------------------------------------------------
-
-(use-package help-mode
-  :ensure nil    ;; built-in package
-  :hook (help-mode . init/bind-comma-keys))
-
-;; ------------------------------------------------------------
-
 (use-package which-key
   :config
   (which-key-mode))
@@ -478,6 +466,7 @@
 (use-package multiple-cursors
   :defer t
   :after (:all multistate)
+
   :init
   (multistate-define-state
    'mc
@@ -521,6 +510,7 @@
 (use-package phi-search
   :defer t
   :after (:all multistate)
+
   :bind
   (:map
    multistate-emacs-state-map
@@ -553,6 +543,7 @@
 (use-package citre
   :defer t
   :after (:all multistate color-theme-sanityinc-tomorrow)
+
   :init
   (require 'citre-config)
   (autoload 'citre-peek-restore "citre" "Should have been autoloaded by citre...." t nil)
@@ -634,6 +625,7 @@
 (use-package vterm
   :defer t
   :after (:all multistate)
+
   :init
   (multistate-define-state
    'vterm
