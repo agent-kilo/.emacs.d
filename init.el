@@ -654,6 +654,9 @@
    multistate-vterm-state-map
    ("C-z" . vterm-copy-mode)
    ("C-c C-z" . vterm--self-insert)
+   ("C-c C-t" . vterm--self-insert)
+   ("C-s" . vterm--self-insert)
+   ("C-r" . vterm--self-insert)
 
    :map
    multistate-vterm-copy-state-map
