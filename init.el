@@ -552,7 +552,7 @@
    'citre-peek
    :lighter "P"
    :cursor 'box
-   :parent 'multistate-cmd-state-map)
+   :parent 'multistate-suppress-map)
 
   ;; remove "reference to free variable" warnings
   (defvar multistate-citre-peek-state-map)
@@ -591,7 +591,8 @@
    ("q" . (lambda ()
             (interactive)
             (call-interactively 'citre-peek-abort)
-            (multistate-cmd-state))))
+            (multistate-cmd-state)))
+   ("C-l" . recenter-top-bottom))
 
   :config
   (setq citre-peek-file-content-height 22)
