@@ -272,13 +272,13 @@
   :init
   (multistate-define-state
    'emacs
-   :lighter "E"
+   :lighter "emacs"
    :cursor 'bar)
 
   (multistate-define-state
    'cmd
    :default t
-   :lighter "C"
+   :lighter "cmd"
    :cursor 'box
    :parent 'multistate-emacs-state-map)
 
@@ -470,7 +470,7 @@
   :init
   (multistate-define-state
    'mc
-   :lighter "M"
+   :lighter "mc"
    :cursor 'box
    :parent 'multistate-cmd-state-map)
 
@@ -550,7 +550,7 @@
 
   (multistate-define-state
    'citre-peek
-   :lighter "P"
+   :lighter "citre-peek"
    :cursor 'box
    :parent 'multistate-suppress-map)
 
@@ -630,13 +630,13 @@
   :init
   (multistate-define-state
    'vterm
-   :lighter "T"
+   :lighter "vterm"
    :cursor 'bar
    :parent 'multistate-emacs-state-map)
 
   (multistate-define-state
    'vterm-copy
-   :lighter "TC"
+   :lighter "vterm-copy"
    :cursor 'box
    :parent 'multistate-cmd-state-map)
 
