@@ -562,17 +562,8 @@
   :bind
   (:map
    multistate-cmd-state-map
-   ("g p" . (lambda ()
-              (interactive)
-              (call-interactively 'citre-peek)
-              ;; XXX: the states and modes may get out of sync, but
-              ;;      since citre don't have proper hooks, this is
-              ;;      the best we can do
-              (multistate-citre-peek-state)))
-   ("g r" . (lambda ()
-              (interactive)
-              (call-interactively 'citre-peek-restore)
-              (multistate-citre-peek-state)))
+   ("g p" . citre-peek)
+   ("g r" . citre-peek-restore)
 
    :map
    multistate-citre-peek-state-map
@@ -590,10 +581,7 @@
    ("l D" . citre-peek-delete-branches)
    ("l f" . citre-peek-make-current-tag-first)
    ("l j" . citre-peek-jump)
-   ("q" . (lambda ()
-            (interactive)
-            (call-interactively 'citre-peek-abort)
-            (multistate-cmd-state)))
+   ("q" . citre-peek-abort)
    ("C-l" . recenter-top-bottom))
 
   :config
@@ -608,8 +596,11 @@
                       :foreground (init/get-theme-color 'background)
                       :background (init/get-theme-color 'blue))
 
-  (add-hook 'citre-after-jump-hook
-            #'(lambda () (multistate-citre-peek-state))))
+  (add-hook 'citre-peek--mode-hook
+            #'(lambda ()
+                (if citre-peek--mode
+                    (multistate-citre-peek-state)
+                  (multistate-cmd-state)))))
 
 ;; ------------------------------------------------------------
 
