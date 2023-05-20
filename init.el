@@ -21,7 +21,9 @@
 (line-number-mode 1)
 (column-number-mode 1)
 (setq display-line-numbers-type 'visual)
-(global-display-line-numbers-mode)
+(add-hook prog-mode-hook
+          #'(lambda ()
+              (display-line-numbers-mode 1)))
 
 (defvar init/default-font "TamzenForPowerline-11:antialias=none")
 (add-to-list 'default-frame-alist `(font . ,init/default-font))
@@ -662,7 +664,6 @@
   :config
   (add-hook 'vterm-mode-hook
             #'(lambda ()
-                (display-line-numbers-mode -1)
                 (multistate-vterm-state)))
 
   (add-hook 'vterm-copy-mode-hook
