@@ -542,6 +542,11 @@
 
 ;; ------------------------------------------------------------
 
+;; emacs wants this in the top level, or there'll be
+;; "'make-variable-buffer-local' not called at toplevel" warnings
+;; when byte-compiling
+(defvar-local init/citre/prev-dln-mode 0)
+
 (use-package citre
   :defer t
   :after (:all multistate color-theme-sanityinc-tomorrow)
@@ -595,7 +600,6 @@
                       :foreground (init/get-theme-color 'background)
                       :background (init/get-theme-color 'blue))
 
-  (defvar-local init/citre/prev-dln-mode 0)
   (add-hook 'citre-peek--mode-hook
             #'(lambda ()
                 (if citre-peek--mode
