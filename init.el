@@ -554,7 +554,7 @@
    'citre-peek
    :lighter "citre-peek"
    :cursor 'box
-   :parent 'multistate-suppress-map)
+   :parent 'multistate-cmd-state-map)
 
   ;; remove "reference to free variable" warnings
   (defvar multistate-citre-peek-state-map)
