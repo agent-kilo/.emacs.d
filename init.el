@@ -587,8 +587,6 @@
   :config
   (setq citre-peek-file-content-height 22)
   (setq citre-peek-tag-list-height 3)
-  ;; display-line-numbers-mode tears the border apart when running without this
-  (setq citre-peek-fill-fringe nil)
 
   (set-face-attribute 'citre-peek-border-face nil
                       :background (init/get-theme-color 'blue))
@@ -596,11 +594,20 @@
                       :foreground (init/get-theme-color 'background)
                       :background (init/get-theme-color 'blue))
 
+  (defvar-local init/citre/prev-dln-mode 0)
   (add-hook 'citre-peek--mode-hook
             #'(lambda ()
                 (if citre-peek--mode
-                    (multistate-citre-peek-state)
-                  (multistate-cmd-state)))))
+                    (progn
+                      ;; display-line-numbers-mode tears the border apart,
+                      ;; so disable it when the peek window is shown
+                      (setq init/citre/prev-dln-mode
+                            (if display-line-numbers-mode 1 -1))
+                      (display-line-numbers-mode -1)
+                      (multistate-citre-peek-state))
+                  (progn
+                    (multistate-cmd-state)
+                    (display-line-numbers-mode init/citre/prev-dln-mode))))))
 
 ;; ------------------------------------------------------------
 
