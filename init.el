@@ -563,6 +563,7 @@
   (:map
    multistate-cmd-state-map
    ("g p" . citre-peek)
+   ("g P" . citre-ace-peek)
    ("g r" . citre-peek-restore)
 
    :map
