@@ -21,7 +21,7 @@
 (line-number-mode 1)
 (column-number-mode 1)
 (setq display-line-numbers-type 'visual)
-(add-hook prog-mode-hook
+(add-hook 'prog-mode-hook
           #'(lambda ()
               (display-line-numbers-mode 1)))
 
