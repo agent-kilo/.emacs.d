@@ -223,6 +223,19 @@
   (when line
     (forward-line (- line 1))))
 
+(defun init/goto-prev-mark ()
+  (interactive)
+  (set-mark-command t))
+
+(defun init/goto-next-mark ()
+  (interactive)
+  (when mark-ring
+    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
+    (when (null (mark t)) (ding))
+    (setq mark-ring (nbutlast mark-ring))
+    (goto-char (marker-position (car (last mark-ring))))))
+
 ;; to be wrapped by mc--cache-input-function, so that read-string stay untouched
 (defun init/mc-read-string (&rest args)
   (apply #'read-string args))
@@ -375,6 +388,10 @@
    ("g u" . backward-up-list)
    ("g U" . up-list)
    ("g d" . down-list)
+
+   ("g k" . init/goto-prev-mark)
+   ("g h" . init/goto-next-mark)
+   ("g K" . pop-global-mark)
 
    ("g g" . init/goto-line)
    ("g G" . end-of-buffer)
@@ -669,6 +686,8 @@
             #'(lambda ()
                 (multistate-vterm-state)))
 
+  ;; remove "reference to free variable" warnings
+  (defvar vterm-copy-mode)
   (add-hook 'vterm-copy-mode-hook
             #'(lambda ()
                 (if vterm-copy-mode
