@@ -558,7 +558,7 @@
    :map
    multistate-cmd-state-map
    ("f" . phi-search)
-   ("M-f" . phi-search-backward)))
+   ("F" . phi-search-backward)))
 
 ;; ------------------------------------------------------------
 
