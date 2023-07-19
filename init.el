@@ -8,9 +8,6 @@
 (setq-default indent-tabs-mode nil)
 (setq tab-always-indent 'complete)
 
-(savehist-mode 1)
-(add-to-list 'savehist-additional-variables 'last-kbd-macro)
-
 ;(setq debug-on-error t)
 
 ;; ------------------------------------------------------------
@@ -458,9 +455,18 @@
 ;; ------------------------------------------------------------
 
 (use-package ido
+  :ensure nil ;; built-in package
   :config
   (ido-mode t)
   (setq ido-enable-flex-matching t))
+
+;; ------------------------------------------------------------
+
+(use-package savehist
+  :ensure nil ;; built-in package
+  :config
+  (savehist-mode 1)
+  (add-to-list 'savehist-additional-variables 'last-kbd-macro))
 
 ;; ------------------------------------------------------------
 
@@ -472,6 +478,7 @@
 ;; ------------------------------------------------------------
 
 (use-package which-func
+  :ensure nil  ;; built-in package
   :config
   (which-function-mode 1))
 
