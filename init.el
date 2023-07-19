@@ -413,6 +413,11 @@
    ("Q" . kmacro-start-macro-or-insert-counter)
    ("q" . kmacro-end-or-call-macro)
 
+   ("j" . delete-indentation)
+   ("J" . (lambda ()
+            (interactive "*")
+            (delete-indentation t)))
+
    ("a" . (lambda ()
             (interactive "*")
             (call-interactively 'forward-char)
@@ -456,6 +461,13 @@
   :config
   (ido-mode t)
   (setq ido-enable-flex-matching t))
+
+;; ------------------------------------------------------------
+
+(use-package dired
+  :ensure nil  ;; built-in package
+  :config
+  (setq dired-dwim-target t))
 
 ;; ------------------------------------------------------------
 
