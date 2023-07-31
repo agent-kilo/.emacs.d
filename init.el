@@ -537,7 +537,7 @@
   :config
   (defun init/cache-mc-read-string ()
     ;; only available after multiple-cursors is loaded
-    (mc--cache-input-function init/mc-read-string))
+    (mc--cache-input-function init/mc-read-string car))
 
   :hook
   ; won't work in :config, don't know why
