@@ -716,7 +716,28 @@
 ;; ------------------------------------------------------------
 
 (use-package ement
-  :defer t)
+  :defer t
+  :after (:all multistate)
+  :config
+  (add-hook 'ement-room-list-mode-hook
+            #'(lambda ()
+                (multistate-emacs-state)
+                (let ((map ement-room-list-mode-map))
+                  (define-key map (kbd "m") 'left-char)
+                  (define-key map (kbd "i") 'right-char)
+                  (define-key map (kbd "n") 'magit-section-forward)
+                  (define-key map (kbd "e") 'magit-section-backward)
+                  (define-key map (kbd "p") 'magit-section-backward))))
+
+  (add-hook 'ement-room-mode-hook
+            #'(lambda ()
+                (multistate-emacs-state)
+                (let ((map ement-room-mode-map))
+                  (define-key map (kbd "m") 'left-char)
+                  (define-key map (kbd "i") 'right-char)
+                  (define-key map (kbd "n") 'ement-room-goto-next)
+                  (define-key map (kbd "e") 'ement-room-goto-prev)
+                  (define-key map (kbd "p") 'ement-room-goto-prev)))))
 
 ;; ------------------------------------------------------------
 
