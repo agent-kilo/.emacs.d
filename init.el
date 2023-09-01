@@ -102,7 +102,7 @@
     (define-key map (kbd "C-k") 'vterm)
     (define-key map (kbd "C-S-K") 'vterm-other-window)
     (define-key map (kbd "h") 'eshell)
-    (define-key map (kbd "C-h") 'eshell)
+    ;(define-key map (kbd "C-h") 'eshell) ;; occupied by which-key paging
 
     (define-key map (kbd "f") 'ido-find-file-other-window)
     (define-key map (kbd "C-f") 'ido-find-file-other-window)
@@ -110,7 +110,7 @@
     (define-key map (kbd "C-S-F") 'ido-find-file-other-frame)
 
     (define-key map (kbd "g") 'ido-switch-buffer-other-window)
-    (define-key map (kbd "C-g") 'ido-switch-buffer-other-window)
+    ;(define-key map (kbd "C-g") 'ido-switch-buffer-other-window) ;; occupied by cmd cancelation
     (define-key map (kbd "G") 'ido-switch-buffer-other-frame)
     (define-key map (kbd "C-S-G") 'ido-switch-buffer-other-frame)
 
