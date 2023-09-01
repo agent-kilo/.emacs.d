@@ -462,6 +462,23 @@
 
 ;; ------------------------------------------------------------
 
+(use-package winner
+  :ensure nil ;; built-in package
+  :defer nil  ;; suppress implicit :defer by :bind
+  :config
+  (setq winner-dont-bind-my-keys t)
+  (winner-mode 1)
+
+  :bind
+  (:map
+   init/win-key-map
+   ("u" . winner-undo)
+   ("C-u" . winner-undo)
+   ("r" . winner-redo)
+   ("C-r" . winner-redo)))
+
+;; ------------------------------------------------------------
+
 (use-package savehist
   :ensure nil ;; built-in package
   :config
