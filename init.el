@@ -736,6 +736,10 @@
   :defer t
   :after (:all multistate)
   :config
+  ;; remove "reference to free variable" warnings
+  (defvar ement-room-list-mode-map)
+  (defvar ement-room-mode-map)
+
   (add-hook 'ement-room-list-mode-hook
             #'(lambda ()
                 (multistate-emacs-state)
