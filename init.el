@@ -749,7 +749,9 @@
                   (define-key map (kbd "i") 'right-char)
                   (define-key map (kbd "n") 'magit-section-forward)
                   (define-key map (kbd "e") 'magit-section-backward)
-                  (define-key map (kbd "p") 'magit-section-backward))))
+                  (define-key map (kbd "p") 'magit-section-backward)
+                  (define-key map (kbd "M-g M-n") 'ement-notify-switch-to-notifications-buffer)
+                  (define-key map (kbd "M-g M-m") 'ement-notify-switch-to-mentions-buffer))))
 
   (add-hook 'ement-room-mode-hook
             #'(lambda ()
