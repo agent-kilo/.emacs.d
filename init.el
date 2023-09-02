@@ -20,7 +20,8 @@
 (setq display-line-numbers-type 'visual)
 (add-hook 'prog-mode-hook
           #'(lambda ()
-              (display-line-numbers-mode 1)))
+              (display-line-numbers-mode 1)
+              (electric-pair-local-mode 1)))
 
 (defvar init/default-font "TamzenForPowerline-11:antialias=none")
 (add-to-list 'default-frame-alist `(font . ,init/default-font))
