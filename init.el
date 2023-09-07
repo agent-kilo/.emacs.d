@@ -770,6 +770,15 @@
 
 ;; ------------------------------------------------------------
 
+(use-package cc-mode
+  :ensure nil  ;; built-in package
+  :defer t
+  :init
+  (setq c-default-style "linux"
+        c-basic-offset 4))
+
+;; ------------------------------------------------------------
+
 (use-package kotlin-mode
   :defer t)
 
