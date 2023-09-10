@@ -97,6 +97,8 @@
     (define-key map (kbd "C-S-I") 'enlarge-window-horizontally)
     (define-key map (kbd "C-S-N") 'shrink-window)
     (define-key map (kbd "C-S-E") 'enlarge-window)
+    (define-key map (kbd "=") 'balance-windows)
+    (define-key map (kbd "C-=") 'balance-windows)
 
     (define-key map (kbd "k") 'vterm)
     (define-key map (kbd "K") 'vterm-other-window)
