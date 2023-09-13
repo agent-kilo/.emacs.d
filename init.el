@@ -777,6 +777,7 @@
   :defer t
   :init
   (setq c-default-style "linux"
+        indent-tabs-mode nil
         c-basic-offset 4))
 
 ;; ------------------------------------------------------------
