@@ -775,10 +775,15 @@
 (use-package cc-mode
   :ensure nil  ;; built-in package
   :defer t
-  :init
-  (setq c-default-style "linux"
-        indent-tabs-mode nil
-        c-basic-offset 4))
+  :config
+  (setq c-default-style "linux")
+
+  (defun init/setup-cc-mode ()
+    (setq indent-tabs-mode nil)
+    (setq c-basic-offset 4))
+
+  :hook
+  (c-mode-common . init/setup-cc-mode))
 
 ;; ------------------------------------------------------------
 
