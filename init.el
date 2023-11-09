@@ -493,12 +493,14 @@
           (last-command last-command)
           (buffer-modified (buffer-modified-p))
           (hippie-expand-function (or hippie-expand-function 'hippie-expand))
-          (warning-suppress-types (cons '(undo discard-info) warning-suppress-types)))
-      (cl-flet ((ding)) ; avoid the (ding) when hippie-expand exhausts its options.
-        (while (progn
-                 (funcall hippie-expand-function nil)
-                 (setq last-command 'init/hippie-expand-completions)
-                 (not (equal he-num -1)))))
+          ;;(warning-suppress-types (cons '(undo discard-info) warning-suppress-types))
+          )
+      (with-undo-amalgamate
+        (cl-flet ((ding)) ; avoid the (ding) when hippie-expand exhausts its options.
+          (while (progn
+                   (funcall hippie-expand-function nil)
+                   (setq last-command 'init/hippie-expand-completions)
+                   (not (equal he-num -1))))))
       ;; Evaluating the completions modifies the buffer, however we will finish
       ;; up in the same state that we began.
       (set-buffer-modified-p buffer-modified)
@@ -510,9 +512,7 @@
     (let* ((options (init/hippie-expand-completions hippie-expand-function))
            (sorted-options (cl-sort options
                                     #'(lambda (s1 s2)
-                                        (if (= (length s1) (length s2))
-                                            (string-lessp s1 s2)
-                                          (< (length s1) (length s2))))))
+                                        (< (length s1) (length s2)))))
            (selection (and sorted-options
                            (ido-completing-read "Completions: " sorted-options nil nil he-search-string))))
       (if selection
