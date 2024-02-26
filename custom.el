@@ -4,10 +4,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" default))
+   '("6fc9e40b4375d9d8d0d9521505849ab4d04220ed470db0b78b700230da0a86c1" default))
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(zig-mode kotlin-mode markdown-mode ement vterm vc-fossil eglot citre imenu-anywhere sml-modeline phi-search multiple-cursors expand-region which-key color-theme-sanityinc-tomorrow multistate use-package)))
+   '(zig-mode kotlin-mode markdown-mode ement vterm vc-fossil eglot citre imenu-anywhere sml-modeline phi-search multiple-cursors expand-region which-key color-theme-sanityinc-tomorrow kkp multistate use-package)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
